@@ -1,134 +1,148 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const myProjects = [
   {
     id: 1,
-    title: "NagarSaarthi",
-    description: "An advanced air quality monitoring dashboard for Delhi. It provides real-time pollution metrics and utilizes ML to predict air quality trends for the coming days.",
-    tags: ["React", "Tailwind CSS", "ML", "Python", "MongoDB"],
-    image: "/images/nagarsaarthi.jpg", 
-    slug: "nagarsaarthi",
+    title: "CareerOps",
+    description: "An enterprise-grade, strictly typed application engineered to orchestrate complex career lifecycles. Designed a custom React Kanban interface for seamless state management, backed by a robust Node.js ecosystem featuring custom middleware, rate-limiting, and a dedicated AI service layer for intelligent data extraction.",
+    tags: ["TypeScript", "React", "Node.js", "AI Service Layer", "State Management"],
+    image: "/images/nagarsaarthi.jpg", // Keeping existing images for now as placeholders
+    slug: "career-ops",
     year: "2025"
   },
   {
     id: 2,
-    title: "HackwithZairza Repo",
-    description: "An Open Source contribution hub for Hacktoberfest. Specialized in Telegram Bot development, automated tools, and community management.",
-    tags: ["Telegram API", "Node.js", "Open Source"],
-    image: "/images/hackwithzairza.jpg",
-    slug: "hack-with-zairza",
+    title: "NagarSaarthi",
+    description: "An advanced environmental intelligence dashboard predicting Air Quality Indices. Trained and deployed a predictive LSTM neural network, integrating it seamlessly into a high-performance React frontend to deliver real-time environmental monitoring and data analytics.",
+    tags: ["Python", "LSTM Neural Networks", "React", "Data Visualization"],
+    image: "/images/nagarsaarthi.jpg",
+    slug: "nagarsaarthi",
     year: "2025"
   },
   {
     id: 3,
-    title: "Zairzest 4.0 Clone",
-    description: "A pixel-perfect recreation of the Zairzest 4.0 technical fest website. Focused on high-performance animations and glassmorphism UI.",
-    tags: ["React", "Tailwind CSS", "Node.js","MongoDB" ],
+    title: "Zairza",
+    description: "A high-performance, glassmorphic platform engineered for the university technical society. Focused on fluid UI/UX interactions, responsive component architecture, and a modern frontend ecosystem to handle high-traffic community events and technical fests.",
+    tags: ["React", "Tailwind CSS", "Frontend Architecture", "UI Engineering"],
     image: "/images/zairzest.jpg",
     slug: "zairzest-clone",
     year: "2025"
   },
   {
     id: 4,
-    title: "SkyCast Weather",
-    description: "A sleek weather application fetching data from OpenWeatherMap. Features dynamic backgrounds that change based on the weather conditions.",
-    tags: ["API Integration", "JavaScript", "CSS3"],
-    image: "/images/weather.jpg",
-    slug: "weather-app",
+    title: "Automated Community Orchestration",
+    description: "Core open-source contribution for a flagship month-long hackathon event. Architected automated community management tools and resource-finding algorithms leveraging the Telegram API to support asynchronous collaboration and seamless developer onboarding.",
+    tags: ["Python", "Telegram API", "Open Source", "Workflow Automation"],
+    image: "/images/hackwithzairza.jpg",
+    slug: "hack-with-zairza",
     year: "2025"
   },
   {
     id: 5,
-    title: "Neumorphic Calculator",
-    description: "A functional calculator featuring a modern Neumorphic design language. Supports complex operations with a satisfying soft-UI feel.",
-    tags: ["UI/UX", "React", "Logic", "MongoDB"],
+    title: "Soft-UI Neumorphic Engine",
+    description: "A functional computational interface built on the modern Neumorphic design language. Focuses heavily on satisfying soft-UI micro-interactions, robust mathematical logic, and advanced CSS state architecture.",
+    tags: ["React", "CSS Architecture", "UI/UX Logic", "State Handling"],
     image: "/images/calculator.jpg",
     slug: "calculator-app",
     year: "2025"
   }
 ];
 
-export default function Projects() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 },
-    },
-  };
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
+export default function Projects() {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header Animation
+      gsap.from(".projects-header > *", {
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: "power3.out"
+      });
+
+      // Batch Animation for Project Cards
+      ScrollTrigger.batch(".project-card", {
+        onEnter: (elements) => {
+          gsap.fromTo(elements, 
+            { y: 60, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: "power3.out", overwrite: true }
+          );
+        },
+        once: true
+      });
+
+      // Parallax effect for card images
+      gsap.utils.toArray(".project-image").forEach((image) => {
+        gsap.to(image, {
+          yPercent: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: image.parentElement,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+          }
+        });
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen py-20 px-6">
-      <div className="max-w-6xl mx-auto">
-        <header className="text-center mb-16">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-extrabold font-k2d mb-4"
-          >
-            <span className="bg-gradient-to-r from-orange-800 via-orange-500 to-orange-600 bg-clip-text text-transparent">
-              Projects
-            </span>
-          </motion.h1>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg font-lato">
-            Explore my latest works, ranging from environmental AI dashboards to interactive frontend clones.
+    <section ref={containerRef} className="bg-white dark:bg-[#0A0A0A] min-h-screen py-32 px-6 sm:px-12">
+      <div className="max-w-7xl mx-auto">
+        <header className="projects-header mb-32">
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 text-slate-900 dark:text-white">
+            Recent Work
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 max-w-3xl text-xl font-medium leading-relaxed tracking-tight">
+            A selection of projects that explore the intersection of design, technology, and user experience.
           </p>
         </header>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24">
           {myProjects.map((project) => (
-            <motion.div
+            <div
               key={project.id}
-              variants={cardVariants}
-              className="group flex flex-col bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700 hover:-translate-y-2"
+              className="project-card group flex flex-col bg-transparent"
             >
-
-              <div className="relative h-56 overflow-hidden">
+              <Link to={`/projects/${project.slug}`} className="block overflow-hidden rounded-3xl aspect-[4/3] bg-slate-100 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
                 <img 
                   src={project.image} 
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  onError={(e) => { e.target.src = "https://via.placeholder.com/400x250?text=Project+Preview"; }}
+                  className="project-image w-full h-full object-cover scale-110 transition-transform duration-700 group-hover:scale-100"
+                  onError={(e) => { e.target.src = "https://via.placeholder.com/800x600?text=Project+Preview"; }}
                 />
+              </Link>
 
-                <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full text-[10px] font-bold text-orange-600 dark:text-orange-400 shadow-sm">
-                  {project.year}
+              <div className="pt-10 flex flex-col">
+                <div className="flex justify-between items-start mb-6">
+                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tighter group-hover:text-[#E2725B] transition-colors duration-300">
+                    {project.title}
+                  </h2>
+                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-2">
+                    {project.year}
+                  </span>
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-orange-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </div>
-
-              <div className="p-8 flex flex-col flex-grow">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-orange-500 transition-colors mb-3 font-k2d">
-                  {project.title}
-                </h2>
-
-                <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed line-clamp-3">
+                <p className="text-slate-500 dark:text-slate-400 mb-8 text-lg font-medium leading-relaxed tracking-tight line-clamp-2">
                   {project.description}
                 </p>
 
-                {/* Tech Tags */}
-                <div className="flex flex-wrap gap-2 mt-auto mb-8">
+                <div className="flex flex-wrap gap-3 mb-10">
                   {project.tags.map((tag) => (
                     <span 
                       key={tag} 
-                      className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-lg bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-100/50 dark:border-orange-800/30"
+                      className="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400"
                     >
                       {tag}
                     </span>
@@ -137,18 +151,18 @@ export default function Projects() {
 
                 <Link
                   to={`/projects/${project.slug}`}
-                  className="inline-flex items-center text-sm font-bold text-orange-600 dark:text-orange-500 hover:text-orange-700 dark:hover:text-orange-400 transition-all group/link"
+                  className="group/link inline-flex items-center text-xs font-bold uppercase tracking-[0.2em] text-slate-900 dark:text-white transition-all"
                 >
-                  VIEW FULL CASE STUDY
-                  <span className="ml-2 transform group-hover/link:translate-x-2 transition-transform duration-300">
+                  Explore Project
+                  <span className="ml-4 transform group-hover/link:translate-x-2 transition-transform duration-500">
                     →
                   </span>
                 </Link>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
-}
+}

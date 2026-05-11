@@ -1,112 +1,277 @@
-import { motion } from "framer-motion";
-import { FaDownload } from "react-icons/fa";
+import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+  const heroRef = useRef(null);
+  const bentoRef = useRef(null);
+  const magneticRefs = useRef([]);
 
-  const Projects = [
-    "NagarSaarthi (AQI Predictor)", 
-    "Zairzest 4.0 Clone", 
-    "HackwithZairza Bot",
-    "SkyCast Weather App"
+  const projects = [
+    "CareerOps (AI Kanban)",
+    "NagarSaarthi (Predictive AQI)",
+    "Automated Orchestration"
   ];
-  
-  const skills = ["JavaScript", "React", "C++", "Python", "Node.js", "MongoDB", "Framer Motion", "Tailwind CSS", "Git"];
+
+  const skillCategories = [
+    {
+      title: "Architecture",
+      skills: ["MERN Stack", "Next.js", "TypeScript", "Prisma", "PostgreSQL"]
+    },
+    {
+      title: "Intelligence",
+      skills: ["Python", "Flask", "LangChain", "Gemini AI", "RAG Pipelines"]
+    },
+    {
+      title: "Creative",
+      skills: ["Figma", "GSAP", "Tailwind CSS", "UI Engineering", "Three.js"]
+    }
+  ];
+
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Split Text Reveal (Line by line)
+      const splitLines = gsap.utils.toArray(".split-line");
+      splitLines.forEach((line) => {
+        gsap.from(line, {
+          y: 100,
+          opacity: 0,
+          duration: 1,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: line,
+            start: "top 90%",
+          }
+        });
+      });
+
+      // 2. Magnetic Buttons
+      magneticRefs.current.forEach((btn) => {
+        if (!btn) return;
+        const moveBtn = (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          gsap.to(btn, {
+            x: x * 0.3,
+            y: y * 0.3,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        };
+        const resetBtn = () => {
+          gsap.to(btn, {
+            x: 0,
+            y: 0,
+            duration: 0.5,
+            ease: "elastic.out(1, 0.3)"
+          });
+        };
+        btn.addEventListener("mousemove", moveBtn);
+        btn.addEventListener("mouseleave", resetBtn);
+      });
+
+      // 3. Parallax Profile
+      const handleParallax = (e) => {
+        const { clientX, clientY } = e;
+        const xPos = (clientX / window.innerWidth - 0.5) * 40;
+        const yPos = (clientY / window.innerHeight - 0.5) * 40;
+
+        gsap.to(".parallax-bg", { x: xPos * 0.5, y: yPos * 0.5, duration: 0.6 });
+        gsap.to(".parallax-img", { x: -xPos * 0.3, y: -yPos * 0.3, duration: 0.6 });
+      };
+      window.addEventListener("mousemove", handleParallax);
+
+      // 4. Dynamic Counter
+      const counters = gsap.utils.toArray(".count-up");
+      counters.forEach((counter) => {
+        const target = parseInt(counter.getAttribute("data-target"));
+        gsap.to(counter, {
+          innerText: target,
+          duration: 2,
+          snap: { innerText: 1 },
+          scrollTrigger: {
+            trigger: counter,
+            start: "top 90%",
+          }
+        });
+      });
+
+      // 5. Bento Entrance - More robust reveal
+      gsap.fromTo(".bento-item", 
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          stagger: 0.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: bentoRef.current,
+            start: "top 90%",
+            toggleActions: "play none none none"
+          }
+        }
+      );
+
+
+      // 6. Refresh ScrollTrigger after a short delay to account for preloader exit
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 1000);
+
+
+    }, heroRef);
+
+
+    return () => ctx.revert();
+  }, []);
+
+  const addToMagnetic = (el) => {
+    if (el && !magneticRefs.current.includes(el)) {
+      magneticRefs.current.push(el);
+    }
+  };
 
   return (
-    <section className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pt-24 pb-12 px-6 sm:px-12 flex flex-col items-center">
-      <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-12">
+    <section 
+      ref={heroRef}
+      className="min-h-screen bg-white dark:bg-[#0A0A0A] text-slate-900 dark:text-slate-50 pt-32 pb-32 px-6 sm:px-12 flex flex-col items-center selection:bg-[#E2725B] selection:text-white"
+    >
+      <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row justify-between items-center gap-16 lg:gap-24">
+        
+        {/* Left: Content */}
+        <div className="flex flex-col gap-10 w-full lg:w-3/5 items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
+          <div className="space-y-6">
+            <div className="overflow-hidden">
 
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col gap-8 w-full md:max-w-2xl items-center md:items-start text-center md:text-left"
-        >
-          <div>
-            <p className="text-base sm:text-lg font-semibold text-gray-600 dark:text-gray-300">
-              Hi! I am
-            </p>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 font-k2d">
-              Adya Archita Pattnaik
-            </h1>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-k2d bg-gradient-to-r from-orange-800 via-orange-500 to-orange-600 bg-clip-text text-transparent leading-tight break-words w-full">
-              Full-Stack Developer
-            </h2>
+              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.8] text-slate-900 dark:text-white split-line">
+                Designing Digital <br/> 
+                <span className="text-[#E2725B] italic">Experiences.</span>
+              </h1>
+
+            </div>
+            <div className="overflow-hidden">
+              <p className="text-xl md:text-2xl font-medium tracking-tight text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed split-line">
+                I'm Adya Archita Pattnaik, a Full-Stack Engineer specialized in building high-performance, AI-driven web applications.
+              </p>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center">
-            <button
-              onClick={() =>
-                document
-                  .getElementById("contact")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="px-6 py-3 rounded-lg text-white font-bold font-lato bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 hover:scale-105 transition-transform duration-300 shadow-lg shadow-orange-500/20"
+          <div className="hero-btns flex flex-col sm:flex-row gap-8 items-center">
+            <Link
+              ref={addToMagnetic}
+              to="/contact"
+              className="group relative px-12 py-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] transition-transform duration-500 hover:scale-105"
             >
-              Hire Me
-            </button>
+              Start a Project
+            </Link>
+
 
             <a 
+              ref={addToMagnetic}
               href="/resume.pdf" 
               download="Adya_Archita_Pattnaik_CV.pdf"
-              className="px-6 py-3 rounded-lg font-bold font-lato border-2 flex items-center gap-2 text-gray-700 dark:text-gray-300 border-orange-500 hover:bg-orange-500 hover:text-white transition-all duration-300"
+              className="px-12 py-6 rounded-full border border-slate-200 dark:border-slate-800 font-bold uppercase tracking-[0.2em] text-[10px] flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-transform duration-500"
             >
-              <FaDownload className="text-sm" />
-              Download CV
+              Resume 2025
             </a>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 p-4 rounded-lg bg-black/5 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-gray-700">
-            <div className="flex justify-between sm:flex-col sm:pr-6 sm:border-r border-gray-400 w-full sm:w-auto">
-              <p className="text-orange-500 text-xl sm:text-2xl font-extrabold font-k2d">
-                10+
+          <div className="hero-stats flex flex-wrap gap-10 lg:gap-20 pt-16 border-t border-slate-100 dark:border-slate-800 w-full justify-center lg:justify-start">
+
+            <div>
+              <p className="text-5xl font-bold tracking-tighter flex items-baseline">
+                <span className="count-up" data-target="15">0</span>
+                <span className="text-[#E2725B]">+</span>
               </p>
-              <p className="font-bold font-lato text-sm">Projects Done</p>
+              <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-slate-400 mt-3">Projects Delivered</p>
             </div>
-            <div className="flex justify-between sm:flex-col w-full sm:w-auto">
-              <p className="text-orange-500 text-xl sm:text-2xl font-extrabold font-k2d">
-                7+
+            <div>
+              <p className="text-5xl font-bold tracking-tighter flex items-baseline">
+                <span className="count-up" data-target="3">0</span>
+                <span className="text-[#E2725B]">+</span>
               </p>
-              <p className="font-bold font-lato text-sm">Skills Acquired</p>
+              <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-slate-400 mt-3">Years Experience</p>
             </div>
           </div>
-        </motion.div>
+        </div>
+
+        {/* Right: Parallax Visual */}
+        <div className="w-full lg:w-2/5 order-1 lg:order-2">
+          <div className="relative aspect-[4/5] max-w-sm mx-auto">
+            {/* Background Layer */}
+            <div className="parallax-bg absolute inset-0 bg-slate-100 dark:bg-slate-900 rounded-[3.5rem] rotate-6 border border-slate-200 dark:border-slate-800" />
+            
+            {/* Main Image Layer */}
+            <div className="parallax-img relative h-full w-full bg-slate-200 dark:bg-slate-800 rounded-[3.5rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
+              <img 
+                src="images/profile.png" 
+                alt="Adya Archita" 
+                className="w-full h-full object-cover transition-all duration-1000"
+                onError={(e) => { e.target.src = "https://via.placeholder.com/600x800?text=AP"; }}
+              />
+            </div>
+
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-16 grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
-
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="p-8 rounded-2xl shadow-lg bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
-        >
-          <h3 className="text-xl font-bold mb-4 text-orange-500 font-k2d uppercase tracking-wider">Recent Work</h3>
-          <ul className="space-y-3">
-            {Projects.map((p, i) => (
-              <li key={i} className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                {p}
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-
-       <motion.div 
-  whileHover={{ y: -5 }}
-  className="p-8 rounded-2xl shadow-lg bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
->
-  <h3 className="text-xl font-bold mb-4 text-orange-500 font-k2d uppercase tracking-wider">Tech Stack</h3>
-  <div className="flex flex-wrap gap-3">
-    {skills.map((s, i) => (
-      <motion.span
-        key={i}
-        whileHover={{ scale: 1.05 }}
-        className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 text-white text-xs font-bold shadow-md shadow-orange-500/20 border border-orange-400/50 cursor-default"
+      {/* Bento Grid */}
+      <div 
+        ref={bentoRef}
+        className="max-w-7xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-12 gap-8 w-full"
       >
-        {s}
-      </motion.span>
-    ))}
-  </div>
-</motion.div>
+        {/* Selected Works - Small/Wide Bento */}
+        <div className="bento-item md:col-span-5 p-12 rounded-[3rem] bg-white/5 dark:bg-slate-900/30 backdrop-blur-2xl border border-slate-100/50 dark:border-white/10 flex flex-col justify-between group hover:border-[#E2725B]/40 transition-all duration-500 shadow-xl">
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate-400 mb-12">Selected Works</h3>
+            <div className="space-y-8">
+              {projects.map((p, i) => (
+                <div key={i} className="flex items-center gap-6 group/item cursor-pointer">
+                  <div className="w-3 h-3 rounded-full border border-slate-300 dark:border-slate-700 group-hover/item:bg-[#E2725B] group-hover/item:border-[#E2725B] transition-all duration-300" />
+                  <p className="text-xl font-medium tracking-tight text-slate-600 dark:text-slate-400 group-hover/item:text-slate-900 dark:group-hover/item:text-white transition-colors">{p}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-16 flex justify-start">
+            <Link to="/projects" className="group flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] text-[#E2725B]">
+              Explore All 
+              <span className="transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Expertise - Large/Primary Bento */}
+        <div className="bento-item md:col-span-7 p-12 rounded-[3rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex flex-col shadow-2xl relative overflow-hidden">
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.5em] opacity-40 mb-14">Core Expertise</h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
+            {skillCategories.map((cat, i) => (
+              <div key={i} className="space-y-6">
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#E2725B] dark:text-[#E2725B]">{cat.title}</h4>
+                <ul className="space-y-4">
+                  {cat.skills.map((skill, si) => (
+                    <li key={si} className="text-lg font-bold tracking-tighter opacity-80 hover:opacity-100 hover:translate-x-1 transition-all cursor-default">
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-20 pt-16 border-t border-white/10 dark:border-black/5">
+            <p className="text-4xl md:text-5xl font-bold tracking-tighter leading-[0.9] max-w-xl">
+              Engineering <span className="opacity-40 italic">Future-Ready</span> <br/> Digital Ecosystems.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
