@@ -1,8 +1,9 @@
-// src/components/Navbar.jsx
 import { useContext, useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 import { Menu, X } from "lucide-react";
+
+const ADMIN_ENABLED = import.meta.env.VITE_ENABLE_ADMIN === "true";
 
 export default function Navbar() {
   const { darkMode, toggleTheme } = useContext(ThemeContext);
@@ -11,34 +12,33 @@ export default function Navbar() {
 
   const isAuthenticated = localStorage.getItem("token");
 
+  // About is now included + all routes are lowercase
   const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Projects", path: "/Projects" },
-    { name: "Contact", path: "/contact" },
+    { name: "Home",     path: "/" },
+    { name: "About",    path: "/about" },
+    { name: "Projects", path: "/projects" },
+    { name: "Contact",  path: "/contact" },
   ];
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-      scrolled 
-        ? "py-4 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800" 
-        : "py-8 bg-transparent"
-    }`}>
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        scrolled
+          ? "py-4 bg-bg/80 backdrop-blur-xl border-b border-border"
+          : "py-8 bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 sm:px-12">
         <div className="flex justify-between items-center">
 
-          {/* Brand / Logo */}
-          <Link
-            to="/"
-            className="text-xl font-bold tracking-tighter text-slate-900 dark:text-white"
-          >
+          {/* Brand */}
+          <Link to="/" className="text-xl font-bold tracking-tighter text-primary">
             ADYA ARCHITA.
           </Link>
 
@@ -50,10 +50,8 @@ export default function Navbar() {
                 to={link.path}
                 end={link.path === "/"}
                 className={({ isActive }) =>
-                  `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:text-[#E2725B] ${
-                    isActive
-                      ? "text-[#E2725B]"
-                      : "text-slate-500 dark:text-slate-400"
+                  `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:text-accent ${
+                    isActive ? "text-accent" : "text-muted"
                   }`
                 }
               >
@@ -61,14 +59,12 @@ export default function Navbar() {
               </NavLink>
             ))}
 
-            {isAuthenticated && (
+            {ADMIN_ENABLED && isAuthenticated && (
               <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
-                  `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:text-[#E2725B] ${
-                    isActive
-                      ? "text-[#E2725B]"
-                      : "text-slate-500 dark:text-slate-400"
+                  `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:text-accent ${
+                    isActive ? "text-accent" : "text-muted"
                   }`
                 }
               >
@@ -76,39 +72,43 @@ export default function Navbar() {
               </NavLink>
             )}
 
-            <div className="flex items-center gap-6 pl-6 border-l border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-6 pl-6 border-l border-border">
               <button
                 onClick={toggleTheme}
+                aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
                 className="text-lg hover:scale-110 transition-transform"
               >
                 {darkMode ? "☀️" : "🌙"}
               </button>
 
-              {isAuthenticated ? (
-                <button
-                  onClick={() => {
-                    localStorage.removeItem("token");
-                    window.location.href = "/";
-                  }}
-                  className="px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all"
-                >
-                  Logout
-                </button>
-              ) : (
-                <NavLink
-                  to="/admin"
-                  className="px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-80 transition-all"
-                >
-                  Admin
-                </NavLink>
+              {ADMIN_ENABLED && (
+                isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      window.location.href = "/";
+                    }}
+                    className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-bg transition-all"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <NavLink
+                    to="/admin"
+                    className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-80 transition-all"
+                  >
+                    Admin
+                  </NavLink>
+                )
               )}
             </div>
           </div>
 
-          {/* Mobile Right Section */}
+          {/* Mobile Controls */}
           <div className="md:hidden flex items-center space-x-6">
             <button
               onClick={toggleTheme}
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
               className="text-lg"
             >
               {darkMode ? "☀️" : "🌙"}
@@ -116,7 +116,9 @@ export default function Navbar() {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-900 dark:text-white"
+              aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isOpen}
+              className="text-primary"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -125,9 +127,11 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Dropdown */}
-      <div className={`md:hidden absolute top-full left-0 w-full bg-white dark:bg-[#0A0A0A] border-b border-slate-100 dark:border-slate-800 transition-all duration-500 overflow-hidden ${
-        isOpen ? "max-h-[400px] opacity-100 py-8" : "max-h-0 opacity-0 py-0"
-      }`}>
+      <div
+        className={`md:hidden absolute top-full left-0 w-full bg-bg border-b border-border transition-all duration-500 overflow-hidden ${
+          isOpen ? "max-h-[400px] opacity-100 py-8" : "max-h-0 opacity-0 py-0"
+        }`}
+      >
         <div className="flex flex-col items-center space-y-8">
           {navLinks.map((link) => (
             <NavLink
@@ -137,9 +141,7 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
                 `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 ${
-                  isActive
-                    ? "text-[#E2725B]"
-                    : "text-slate-500 dark:text-slate-400"
+                  isActive ? "text-accent" : "text-muted"
                 }`
               }
             >
@@ -154,9 +156,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
                   `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 ${
-                    isActive
-                      ? "text-[#E2725B]"
-                      : "text-slate-500 dark:text-slate-400"
+                    isActive ? "text-accent" : "text-muted"
                   }`
                 }
               >
@@ -176,7 +176,7 @@ export default function Navbar() {
             <NavLink
               to="/admin"
               onClick={() => setIsOpen(false)}
-              className="text-xs font-bold uppercase tracking-[0.2em] text-slate-900 dark:text-white"
+              className="text-xs font-bold uppercase tracking-[0.2em] text-primary"
             >
               Admin
             </NavLink>
@@ -186,4 +186,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

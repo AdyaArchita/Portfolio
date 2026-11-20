@@ -1,20 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import {
-  FaFacebookF,
-  FaXTwitter,
-  FaLinkedinIn,
-  FaInstagram,
-  FaYoutube,
-  FaGithub,
-} from "react-icons/fa6";
-import { api } from "../services/api";
+import emailjs from "@emailjs/browser";
+import { socialLinks } from "../data/social";
+
+const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || "";
+const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "";
+const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY   || "";
+const USE_EMAILJS      = Boolean(EMAILJS_SERVICE && EMAILJS_TEMPLATE && EMAILJS_KEY);
 
 export default function Contact() {
   const containerRef = useRef(null);
+  const formRef = useRef(null);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [charsLeft, setCharsLeft] = useState(200);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errors, setErrors] = useState({ name: "", email: "", message: "" });
 
   useEffect(() => setCharsLeft(200 - form.message.length), [form.message]);
@@ -26,15 +25,14 @@ export default function Contact() {
         opacity: 0,
         duration: 1,
         stagger: 0.2,
-        ease: "power3.out"
+        ease: "power3.out",
       });
-
       gsap.from(".contact-form", {
         opacity: 0,
         y: 60,
         duration: 1.2,
         ease: "power3.out",
-        delay: 0.4
+        delay: 0.4,
       });
     }, containerRef);
 
@@ -47,6 +45,7 @@ export default function Contact() {
     e.preventDefault();
     setErrors({ name: "", email: "", message: "" });
 
+    // Client-side validation
     let valid = true;
     const newErrors = { name: "", email: "", message: "" };
 
@@ -72,115 +71,182 @@ export default function Contact() {
     setErrors(newErrors);
     if (!valid) return;
 
+    setStatus("sending");
+
     try {
-      await api.post("/contact", form);
-      setSubmitted(true);
+      if (USE_EMAILJS) {
+        // EmailJS path — reads keys from .env (no backend needed)
+        await emailjs.sendForm(
+          EMAILJS_SERVICE,
+          EMAILJS_TEMPLATE,
+          formRef.current,
+          EMAILJS_KEY
+        );
+      } else {
+        // Graceful degradation: open mailto link so the message is never lost
+        const mailtoLink = `mailto:adyaarchita@example.com?subject=Portfolio%20Contact%20from%20${encodeURIComponent(
+          form.name
+        )}&body=${encodeURIComponent(form.message)}%0A%0AFrom%3A%20${encodeURIComponent(form.email)}`;
+        window.open(mailtoLink, "_blank");
+      }
+      setStatus("success");
       setForm({ name: "", email: "", message: "" });
-      setTimeout(() => setSubmitted(false), 3000);
+      setTimeout(() => setStatus("idle"), 5000);
     } catch {
-      setErrors((prev) => ({ ...prev, message: "Failed to send message" }));
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
-  const socialLinks = [
-    { icon: <FaFacebookF />, url: "https://facebook.com", label: "Facebook" },
-    { icon: <FaXTwitter />, url: "https://x.com", label: "Twitter" },
-    { icon: <FaLinkedinIn />, url: "https://linkedin.com", label: "LinkedIn" },
-    { icon: <FaInstagram />, url: "https://instagram.com", label: "Instagram" },
-    { icon: <FaYoutube />, url: "https://youtube.com", label: "YouTube" },
-    { icon: <FaGithub />, url: "https://github.com", label: "GitHub" },
-  ];
-
   return (
-    <section 
+    <section
       ref={containerRef}
-      className="min-h-screen bg-white dark:bg-[#0A0A0A] text-slate-900 dark:text-slate-50 pt-32 pb-32 px-6 sm:px-12"
+      className="min-h-screen bg-bg text-primary pt-32 pb-32 px-6 sm:px-12"
     >
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-24">
-        
+
+        {/* Left: Info + Socials */}
         <div className="contact-header lg:w-1/2 space-y-12">
           <header className="space-y-6">
             <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight">
-              Let's build <br/> something.
+              Let&apos;s build <br /> something.
             </h1>
-            <p className="text-2xl font-medium tracking-tight text-slate-500 dark:text-slate-400">
-              Have a question or a project in mind? I'm always open to discussing new opportunities.
+            <p className="text-2xl font-medium tracking-tight text-muted">
+              Have a question or a project in mind? I&apos;m always open to
+              discussing new opportunities.
             </p>
           </header>
 
-          <div className="space-y-4 pt-12 border-t border-slate-100 dark:border-slate-800">
-            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Connect</h3>
+          <div className="space-y-4 pt-12 border-t border-border">
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
+              Connect
+            </h3>
             <div className="flex flex-wrap gap-4">
-              {socialLinks.map((link, i) => (
-                <a 
-                  key={i}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-lg hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-slate-900 transition-all duration-300"
-                >
-                  {link.icon}
-                </a>
-              ))}
+              {socialLinks.map((link, i) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={i}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label}
+                    className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-lg hover:bg-primary hover:text-bg hover:border-primary transition-all duration-300"
+                  >
+                    <Icon />
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
 
+        {/* Right: Form */}
         <div className="contact-form lg:w-1/2">
-          <form 
+          <form
+            ref={formRef}
             onSubmit={handleSubmit}
-            className="space-y-8 bg-slate-50 dark:bg-slate-900/50 p-12 rounded-[2.5rem] border border-slate-100 dark:border-slate-800"
+            className="space-y-8 bg-surface/80 p-12 rounded-[2.5rem] border border-border"
           >
+            {/* EmailJS expects input names to match template variables */}
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-slate-400 px-1">Full Name</label>
+              <label
+                htmlFor="contact-name"
+                className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+              >
+                Full Name
+              </label>
               <input
+                id="contact-name"
+                name="user_name"
                 type="text"
                 placeholder="What's your name?"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-transparent border-b border-slate-200 dark:border-slate-800 py-4 px-1 focus:border-[#E2725B] outline-none transition-all dark:text-white"
+                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all"
               />
-              {errors.name && <p className="text-red-500 text-xs mt-2">{errors.name}</p>}
+              {errors.name && (
+                <p role="alert" className="text-red-500 text-xs mt-2">{errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-slate-400 px-1">Email Address</label>
+              <label
+                htmlFor="contact-email"
+                className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+              >
+                Email Address
+              </label>
               <input
+                id="contact-email"
+                name="user_email"
                 type="email"
                 placeholder="Where can I reach you?"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full bg-transparent border-b border-slate-200 dark:border-slate-800 py-4 px-1 focus:border-[#E2725B] outline-none transition-all dark:text-white"
+                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all"
               />
-              {errors.email && <p className="text-red-500 text-xs mt-2">{errors.email}</p>}
+              {errors.email && (
+                <p role="alert" className="text-red-500 text-xs mt-2">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-slate-400 px-1">Message</label>
+              <label
+                htmlFor="contact-message"
+                className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+              >
+                Message
+              </label>
               <textarea
+                id="contact-message"
+                name="message"
                 placeholder="Tell me about your project..."
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 rows={4}
-                className="w-full bg-transparent border-b border-slate-200 dark:border-slate-800 py-4 px-1 focus:border-[#E2725B] outline-none transition-all dark:text-white resize-none"
+                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all resize-none"
               />
               <div className="flex justify-between mt-2">
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest">{charsLeft} characters remaining</p>
-                {errors.message && <p className="text-red-500 text-xs">{errors.message}</p>}
+                <p className="text-xs text-muted uppercase tracking-widest">
+                  {charsLeft} characters remaining
+                </p>
+                {errors.message && (
+                  <p role="alert" className="text-red-500 text-xs">{errors.message}</p>
+                )}
               </div>
             </div>
 
+            {/* Intentional inversion button */}
             <button
               type="submit"
-              className="group relative w-full py-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-all hover:pr-12 overflow-hidden"
+              disabled={status === "sending"}
+              className="group relative w-full py-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-all hover:pr-12 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <span>Send Message</span>
-              <span className="absolute right-8 opacity-0 group-hover:opacity-100 transition-all duration-300">→</span>
+              <span>
+                {status === "sending" ? "Sending…" : "Send Message"}
+              </span>
+              {status !== "sending" && (
+                <span className="absolute right-8 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  →
+                </span>
+              )}
             </button>
 
-            {submitted && (
-              <p className="text-[#E2725B] text-center font-bold text-sm tracking-widest uppercase animate-pulse">
-                Message Sent Successfully
+            {/* Status feedback */}
+            {status === "success" && (
+              <p role="status" className="text-accent text-center font-bold text-sm tracking-widest uppercase animate-pulse">
+                {USE_EMAILJS ? "Message Sent Successfully ✓" : "Opening your email client…"}
+              </p>
+            )}
+            {status === "error" && (
+              <p role="alert" className="text-red-500 text-center font-bold text-sm tracking-widest uppercase">
+                Something went wrong. Please try again.
+              </p>
+            )}
+            {!USE_EMAILJS && status === "idle" && (
+              <p className="text-muted/60 text-center text-xs tracking-widest">
+                Email service not configured — form will open your mail app.
               </p>
             )}
           </form>
@@ -189,4 +255,3 @@ export default function Contact() {
     </section>
   );
 }
-

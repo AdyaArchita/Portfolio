@@ -23,7 +23,7 @@ export default function Dashboard() {
     e.preventDefault();
     const payload = {
       title: form.title,
-      content: form.content, 
+      content: form.content,
       tags: form.tags
         .split(",")
         .map((t) => t.trim())
@@ -43,7 +43,7 @@ export default function Dashboard() {
     setSelected(p);
     setForm({
       title: p.title,
-      content: p.content, 
+      content: p.content,
       tags: (p.tags || []).join(", "),
     });
   };
@@ -55,40 +55,46 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0A0A0A] text-slate-900 dark:text-slate-50 pt-32 pb-32 px-6 sm:px-12">
+    <div className="min-h-screen bg-bg text-primary pt-32 pb-32 px-6 sm:px-12">
       <div className="max-w-5xl mx-auto">
         <header className="mb-16">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
             Dashboard
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 font-medium">Manage your portfolio content and posts.</p>
+          <p className="text-muted font-medium">
+            Manage your portfolio content and posts.
+          </p>
         </header>
 
         {/* Post Form */}
         <form
           onSubmit={savePost}
-          className="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 mb-24 space-y-6"
+          className="bg-surface/80 border border-border rounded-3xl p-8 mb-24 space-y-6"
         >
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-slate-400 px-1">Post Title</label>
+            <label className="text-xs font-bold uppercase tracking-widest text-muted px-1">
+              Post Title
+            </label>
             <input
               type="text"
               placeholder="Enter title..."
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               required
-              className="w-full rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 dark:text-white px-6 py-4 focus:ring-2 focus:ring-[#E2725B] focus:border-transparent outline-none transition-all"
+              className="w-full rounded-2xl border border-border bg-bg text-primary px-6 py-4 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-slate-400 px-1">Content</label>
-            <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+            <label className="text-xs font-bold uppercase tracking-widest text-muted px-1">
+              Content
+            </label>
+            <div className="rounded-2xl overflow-hidden border border-border bg-bg">
               <ReactQuill
                 theme="snow"
                 value={form.content}
                 onChange={(val) => setForm({ ...form, content: val })}
-                className="dark:text-white"
+                className="text-primary"
                 modules={{
                   toolbar: [
                     [{ header: [1, 2, 3, false] }],
@@ -103,20 +109,22 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-slate-400 px-1">Tags</label>
+            <label className="text-xs font-bold uppercase tracking-widest text-muted px-1">
+              Tags
+            </label>
             <input
               type="text"
               placeholder="React, Design, GSAP..."
               value={form.tags}
               onChange={(e) => setForm({ ...form, tags: e.target.value })}
-              className="w-full rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 dark:text-white px-6 py-4 focus:ring-2 focus:ring-[#E2725B] focus:border-transparent outline-none transition-all"
+              className="w-full rounded-2xl border border-border bg-bg text-primary px-6 py-4 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
             />
           </div>
 
           <div className="flex gap-4 pt-4">
             <button
               type="submit"
-              className="px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:opacity-90 transition-all active:scale-95"
+              className="px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:opacity-90 transition-all active:scale-95"
             >
               {selected ? "Update Entry" : "Publish Entry"}
             </button>
@@ -127,7 +135,7 @@ export default function Dashboard() {
                   setSelected(null);
                   setForm({ title: "", content: "", tags: "" });
                 }}
-                className="px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all"
+                className="px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest border border-border hover:bg-surface transition-all"
               >
                 Discard
               </button>
@@ -137,27 +145,31 @@ export default function Dashboard() {
 
         {/* Existing Posts */}
         <div className="space-y-8">
-          <h2 className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white">
+          <h2 className="text-2xl font-bold tracking-tighter text-primary">
             Recent Entries
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {posts.map((p) => (
               <div
                 key={p._id}
-                className="group p-8 rounded-3xl bg-white dark:bg-[#0A0A0A] border border-slate-100 dark:border-slate-800 hover:border-[#E2725B]/30 transition-all duration-500 flex flex-col justify-between"
+                className="group p-8 rounded-3xl bg-bg border border-border hover:border-accent/30 transition-all duration-500 flex flex-col justify-between"
               >
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-[#E2725B] transition-colors">
+                  <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-accent transition-colors">
                     {p.title}
                   </h3>
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">
-                    {new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  <p className="text-xs font-bold uppercase tracking-widest text-muted mb-6">
+                    {new Date(p.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <button
                     onClick={() => editPost(p)}
-                    className="text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white hover:underline underline-offset-4"
+                    className="text-xs font-bold uppercase tracking-widest text-primary hover:underline underline-offset-4"
                   >
                     Edit
                   </button>
@@ -176,4 +188,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

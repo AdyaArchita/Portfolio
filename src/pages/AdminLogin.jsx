@@ -22,14 +22,14 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-bg px-4">
       <motion.div
-        className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8"
+        className="w-full max-w-md bg-surface border border-border rounded-[2rem] p-8 shadow-2xl"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">
+        <h1 className="text-2xl font-bold tracking-tighter text-primary mb-6 text-center">
           Admin Login
         </h1>
 
@@ -40,7 +40,7 @@ export default function AdminLogin() {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white"
+            className="px-4 py-3 rounded-xl border border-border bg-bg text-primary focus:border-accent focus:outline-none transition-all"
           />
           <input
             type="password"
@@ -48,12 +48,12 @@ export default function AdminLogin() {
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white"
+            className="px-4 py-3 rounded-xl border border-border bg-bg text-primary focus:border-accent focus:outline-none transition-all"
           />
 
           <button
             type="submit"
-            className="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition"
+            className="mt-2 px-4 py-3 bg-slate-900 dark:bg-white hover:opacity-90 text-white dark:text-slate-900 font-bold rounded-full uppercase tracking-[0.2em] text-xs transition-all"
           >
             Login
           </button>
