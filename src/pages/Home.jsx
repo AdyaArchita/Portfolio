@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects as allProjects } from "../data/projects";
+import { achievements } from "../data/achievements";
 import { skillCategories } from "../data/skills";
 import { site } from "../data/site";
 
@@ -14,28 +15,16 @@ export default function Home() {
   const magneticRefs = useRef([]);
   const [profileAvailable, setProfileAvailable] = useState(true);
   const [profileUseWebp, setProfileUseWebp] = useState(true);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const roles = ["Full-Stack", "AI Agents", "Data & ML"];
 
-  // Show first 3 project titles in the bento
-  const featuredTitles = allProjects.slice(0, 3).map((p) => p.title);
+  const featuredTitles = allProjects
+    .filter((project) => project.status === "featured")
+    .slice(0, 3)
+    .map((project) => project.title);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Split Text Reveal (Line by line)
-      const splitLines = gsap.utils.toArray(".split-line");
-      splitLines.forEach((line) => {
-        gsap.from(line, {
-          y: 100,
-          opacity: 0,
-          duration: 1,
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: line,
-            start: "top 90%",
-          },
-        });
-      });
-
-      // 2. Magnetic Buttons
       magneticRefs.current.forEach((btn) => {
         if (!btn) return;
         const moveBtn = (e) => {
@@ -51,19 +40,6 @@ export default function Home() {
         btn.addEventListener("mouseleave", resetBtn);
       });
 
-      // 3. Dynamic Counter
-      const counters = gsap.utils.toArray(".count-up");
-      counters.forEach((counter) => {
-        const target = parseInt(counter.getAttribute("data-target"));
-        gsap.to(counter, {
-          innerText: target,
-          duration: 2,
-          snap: { innerText: 1 },
-          scrollTrigger: { trigger: counter, start: "top 90%" },
-        });
-      });
-
-      // 4. Bento Entrance
       gsap.fromTo(
         ".bento-item",
         { y: 60, opacity: 0 },
@@ -81,12 +57,19 @@ export default function Home() {
         }
       );
 
-      // 5. Refresh ScrollTrigger after preloader exit
       setTimeout(() => ScrollTrigger.refresh(), 1000);
     }, heroRef);
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setRoleIndex((current) => (current + 1) % roles.length);
+    }, 2400);
+
+    return () => window.clearInterval(interval);
+  }, [roles.length]);
 
   const addToMagnetic = (el) => {
     if (el && !magneticRefs.current.includes(el)) {
@@ -105,15 +88,24 @@ export default function Home() {
         <div className="flex flex-col gap-10 w-full lg:w-3/5 items-center lg:items-start text-center lg:text-left order-1 lg:order-1">
           <div className="space-y-6">
             <div className="overflow-hidden">
-              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.8] text-text split-line">
-                Designing Digital <br />
-                <span className="text-accent italic">Experiences.</span>
+              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9] text-text">
+                <span className="hero-word" style={{ "--hero-word-delay": "0ms" }}>Designing</span>{" "}
+                <span className="hero-word" style={{ "--hero-word-delay": "170ms" }}>Digital</span>
+                <br />
+                <span className="hero-word text-accent italic" style={{ "--hero-word-delay": "340ms" }}>
+                  Experiences.
+                </span>
               </h1>
             </div>
             <div className="overflow-hidden">
-              <p className="text-xl md:text-2xl font-medium tracking-tight text-muted max-w-xl leading-relaxed split-line">
-                I'm Adya Archita Pattnaik, a Full-Stack Engineer specialized in
-                building high-performance, AI-driven web applications.
+              <p className="text-xl md:text-2xl font-medium tracking-tight text-muted max-w-xl leading-relaxed">
+                I&apos;m Adya Archita Pattnaik, a B.Tech Computer Science student building full-stack and AI-driven web applications.
+              </p>
+              <p className="mt-4 text-sm font-bold uppercase tracking-[0.2em] text-muted">
+                Focus:{" "}
+                <span key={roles[roleIndex]} className="role-word text-text">
+                  {roles[roleIndex]}
+                </span>
               </p>
             </div>
           </div>
@@ -121,40 +113,34 @@ export default function Home() {
           <div className="hero-btns flex flex-col sm:flex-row gap-8 items-center">
             <Link
               ref={addToMagnetic}
-              to="/contact"
-              className="group relative px-12 py-6 bg-accent text-on-accent rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-all duration-500 hover:scale-105 hover:bg-accent-hover"
+              to="/projects"
+              className="group relative px-10 py-5 bg-accent text-on-accent rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-colors hover:bg-accent-hover"
             >
-              Start a Project
+              View Projects
             </Link>
 
             <a
               ref={addToMagnetic}
               href={site.resumePath}
               download="Adya-Archita-Pattnaik-Resume.pdf"
-              className="px-12 py-6 rounded-full border border-border text-text font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-2 bg-transparent hover:bg-surface hover:border-accent transition-all duration-500"
+              className="px-10 py-5 rounded-full border border-border text-text font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-2 bg-transparent hover:border-accent transition-colors"
             >
-              Resume 2025
+              Resume
             </a>
           </div>
 
-          <div className="hero-stats flex flex-wrap gap-10 lg:gap-20 pt-16 border-t border-border w-full justify-center lg:justify-start">
+          <div className="hero-stats grid w-full grid-cols-1 gap-6 border-t border-border pt-8 sm:grid-cols-3">
             <div>
-              <p className="text-5xl font-bold tracking-tighter flex items-baseline">
-                <span className="count-up" data-target="15">0</span>
-                <span className="text-accent">+</span>
-              </p>
-              <p className="text-xs uppercase tracking-[0.4em] font-bold text-muted mt-3">
-                Projects Delivered
-              </p>
+              <p className="text-3xl font-bold tracking-tighter text-accent">{allProjects.length}</p>
+              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Projects listed</p>
             </div>
             <div>
-              <p className="text-5xl font-bold tracking-tighter flex items-baseline">
-                <span className="count-up" data-target="3">0</span>
-                <span className="text-accent">+</span>
-              </p>
-              <p className="text-xs uppercase tracking-[0.4em] font-bold text-muted mt-3">
-                Years Experience
-              </p>
+              <p className="text-3xl font-bold tracking-tighter text-accent">98.70 percentile</p>
+              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Naukri Campus Young Turks</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold tracking-tighter text-accent">Top 15k</p>
+              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Google Big Code</p>
             </div>
           </div>
         </div>
@@ -162,7 +148,7 @@ export default function Home() {
         {/* Right: Profile Image */}
         {profileAvailable && (
           <div className="w-full lg:w-2/5 order-2 lg:order-2">
-            <div className="relative aspect-[4/5] w-full max-w-[320px] lg:max-w-sm mx-auto rounded-3xl overflow-hidden border border-border bg-surface">
+            <div className="relative aspect-[4/5] w-full max-w-[320px] mx-auto rounded-3xl overflow-hidden border border-border bg-surface">
               <picture className="block h-full w-full">
                 {profileUseWebp && (
                   <source type="image/webp" srcSet="/profile.webp" />
@@ -190,6 +176,21 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      <section aria-labelledby="home-achievements" className="mx-auto mt-20 w-full max-w-7xl">
+        <h2 id="home-achievements" className="mb-6 text-xs font-bold uppercase tracking-[0.2em] text-muted">
+          Achievements
+        </h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {achievements.map((achievement) => (
+            <article key={achievement.title} className="rounded-2xl border border-border bg-surface p-6">
+              <h3 className="text-base font-bold text-text">{achievement.title}</h3>
+              <p className="mt-3 text-sm font-bold text-accent">{achievement.result}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{achievement.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* Bento Grid */}
       <div
