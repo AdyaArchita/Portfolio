@@ -28,12 +28,14 @@ export default function ProjectDetail() {
         stagger: 0.2,
         ease: "power3.out",
       });
-      gsap.from(".project-image-box", {
-        scale: 1.05,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out",
-      });
+      if (project.image) {
+        gsap.from(".project-image-box", {
+          scale: 1.05,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+        });
+      }
     }, headerRef);
 
     return () => ctx.revert();

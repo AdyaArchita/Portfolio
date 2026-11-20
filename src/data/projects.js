@@ -1,192 +1,187 @@
 const projectRecords = [
-  // FEATURED PROJECTS
   {
     id: 1,
     title: "KhataAgent",
-    hook: "AI financial reconciliation engine: matches unstructured Indian tax invoices against a structured ledger.",
-    category: "AI / Fintech",
-    measured: null, // TODO(adya): precision/recall from scripts/evaluate.py
-    safeguards: "AST sandbox + human-in-the-loop review",
-    tryIt: {
-      live: null, // TODO(adya): add live link if available
-      repo: null, // TODO(adya): add repo link if available
-      demo: null, // TODO(adya): add demo link if available
-    },
-    stack: ["LangGraph", "FastAPI", "SQLite", "React", "Gemini"],
-    status: "featured",
-    // Fallbacks for ProjectDetail.jsx
     slug: "khataagent",
+    shortDesc: "Matches unstructured Indian tax invoices against a structured ledger.",
+    content:
+      "A LangGraph reconciliation engine compares tax invoices with a ledger. A Quant Agent uses safe Python execution in an AST sandbox, with human review for uncertain matches.",
+    categories: ["AI Agents", "Full-Stack"],
+    tags: ["LangGraph", "FastAPI", "SQLite", "React", "Gemini"],
+    status: "featured",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/KhataAgent",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
     image: null,
   },
   {
     id: 2,
     title: "MetaHeck (BankKYCAuditEnv)",
-    hook: "OpenEnv-compliant RL environment where an agent acts as a KYC/AML fraud analyst.",
-    category: "RL / Security",
-    measured: null, // TODO(adya): baseline agent scores
-    safeguards: "Procedural ground truth prevents memorization.",
-    tryIt: {
-      live: null, // TODO(adya): add Hugging Face space link
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
-    },
-    stack: ["FastAPI", "Docker", "Hugging Face"],
-    status: "featured",
     slug: "metaheck",
+    shortDesc: "An OpenEnv KYC/AML environment for AI agents.",
+    content:
+      "The procedurally generated environment asks agents to investigate customer profiles, transaction ledgers, and watchlists before making compliance decisions.",
+    categories: ["AI Agents", "ML"],
+    tags: ["FastAPI", "Docker", "Hugging Face"],
+    status: "featured",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/MetaHeck",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
     image: null,
   },
   {
     id: 3,
     title: "IntelAI",
-    hook: "Industrial knowledge assistant over SOPs, maintenance logs and P&IDs.",
-    category: "AI Assistant",
-    measured: "Target: search time cut to under 90 seconds",
-    safeguards: "Role-based access control L1 to L3 enforced at database level",
-    tryIt: {
-      live: null, // TODO(adya): add live link
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
-    },
-    stack: ["Next.js 16", "LangGraph", "Jina", "Neo4j", "Whisper", "MongoDB"],
-    status: "featured",
     slug: "intelai",
+    shortDesc: "An industrial knowledge assistant for SOPs, maintenance logs, and P&IDs.",
+    content:
+      "The assistant brings industrial documents into a queryable system with retrieval, graph context, answer verification, and role-based access controls.",
+    categories: ["AI Agents", "Full-Stack"],
+    tags: ["Next.js", "LangGraph", "Jina", "Neo4j", "Whisper", "MongoDB"],
+    status: "featured",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/IntelAI",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
     image: null,
   },
   {
     id: 4,
     title: "CogniBot (Grid07)",
-    hook: "Cognitive routing + RAG with prompt-injection defense.",
-    category: "RAG / Security",
-    measured: null, // TODO(adya): add measured metric
-    safeguards: "Persona-first prompt + XML boundary tags + explicit directive.",
-    tryIt: {
-      live: null, // TODO(adya): add live link
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
-    },
-    stack: ["ChromaDB", "sentence-transformers", "LangGraph"],
-    status: "featured",
     slug: "cognibot",
+    shortDesc: "Persona routing, RAG, and prompt-injection defense.",
+    content:
+      "The system combines vector-based persona matching, LangGraph orchestration, and a RAG defense that treats user input as data rather than instructions.",
+    categories: ["AI Agents"],
+    tags: ["ChromaDB", "sentence-transformers", "LangGraph"],
+    status: "more",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/CogniBot",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
     image: null,
   },
   {
     id: 5,
     title: "Distribut (Prowider Lead Distribution)",
-    hook: "Concurrency-safe lead allocation.",
-    category: "Backend / Systems",
-    measured: "Concurrency stress test.",
-    safeguards: "Row locks, idempotency key, automatic rollback.",
-    tryIt: {
-      live: null, // TODO(adya): add live link
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
-    },
-    stack: ["Next.js App Router", "PostgreSQL", "Prisma", "SWR"],
-    status: "featured",
     slug: "distribut",
+    shortDesc: "Concurrency-safe lead allocation with transactional round-robin assignment.",
+    content:
+      "The system uses PostgreSQL transactions and row-level locks for lead assignment, with database constraints and idempotency keys to protect against duplicate processing.",
+    categories: ["Full-Stack"],
+    tags: ["Next.js", "PostgreSQL", "Prisma", "SWR"],
+    status: "featured",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/Distribut",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
     image: null,
   },
   {
     id: 6,
     title: "JobTracker",
-    hook: "AI-assisted job application tracker (MERN + TypeScript).",
-    category: "Full Stack",
-    measured: null, // TODO(adya): add measured metric if any
-    safeguards: null, // TODO(adya): add safeguards if any
-    tryIt: {
+    slug: "jobtracker",
+    shortDesc: "A Kanban job-application tracker with AI-assisted insights.",
+    content:
+      "The MERN application tracks job applications and offers AI-assisted job-match scoring, cover-letter hooks, and tailored resume bullets.",
+    categories: ["Full-Stack", "AI Agents"],
+    tags: ["MERN", "TypeScript", "JWT", "@dnd-kit", "React Query", "OpenAI"],
+    status: "featured",
+    note: "The live demo may take about 30 seconds to wake.",
+    links: {
       live: "https://jobtracker-frontend-574d.onrender.com",
       repo: "https://github.com/AdyaArchita/JobTracker",
-      demo: null, // TODO(adya): add demo link if any
+      demo: null, // TODO: Add a verified demo link if available.
     },
-    stack: ["MERN", "TypeScript", "JWT", "@dnd-kit", "React Query", "OpenAI"],
-    status: "featured",
-    note: "May take ~30s to wake",
-    slug: "jobtracker",
     image: null,
   },
-
-  // MORE PROJECTS
   {
     id: 7,
     title: "StateWeave",
-    hook: "Educational visualization of Hebbian-style bounded memory vs Transformer KV-cache growth.",
-    category: "Visualization",
-    measured: null,
-    safeguards: null,
-    tryIt: {
-      live: null, // TODO(adya): add live link
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
-    },
-    stack: ["React"],
-    status: "more",
     slug: "stateweave",
+    shortDesc: "Interactive visualization of bounded Hebbian memory vs Transformer KV-cache growth.",
+    content:
+      "An educational artifact that visualizes linear KV-cache growth against fixed-size Hebbian memory. It does not implement the full BDH algorithm.",
+    categories: ["ML", "Frontend"],
+    tags: ["React"],
+    status: "more",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/StateWeave",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
+    image: null,
   },
   {
     id: 8,
     title: "VoixAI",
-    hook: "Fully local voice-controlled agent with file action confirmation.",
-    category: "AI Agent",
-    measured: null,
-    safeguards: null,
-    tryIt: {
-      live: null, // TODO(adya): add live link
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
-    },
-    stack: ["faster-whisper", "Ollama"],
-    status: "more",
     slug: "voixai",
+    shortDesc: "A local voice agent with confirmation-gated file actions.",
+    content:
+      "The assistant transcribes and classifies voice commands locally, asks for confirmation before file actions, and restricts file operations to its output directory.",
+    categories: ["AI Agents"],
+    tags: ["faster-whisper", "Ollama"],
+    status: "more",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/VoixAI",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
+    image: null,
   },
   {
     id: 9,
     title: "AutoStream",
-    hook: "LangGraph sales agent with RAG + stateful lead capture (FAISS, ~54ms retrieval).",
-    category: "AI Agent",
-    measured: null,
-    safeguards: null,
-    tryIt: {
-      live: null, // TODO(adya): add live link
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
-    },
-    stack: ["LangGraph", "FAISS"],
-    status: "more",
     slug: "autostream",
+    shortDesc: "A LangGraph conversational agent with RAG and stateful lead capture.",
+    content:
+      "The conversational agent uses a local knowledge base to answer product questions and collects lead details across multiple turns.",
+    categories: ["AI Agents"],
+    tags: ["LangGraph", "FAISS"],
+    status: "more",
+    links: {
+      live: null, // TODO: Add a verified live link if available.
+      repo: "https://github.com/AdyaArchita/AutoStream",
+      demo: null, // TODO: Add a verified demo link if available.
+    },
+    image: null,
   },
   {
     id: 10,
     title: "NagarSaarthi",
-    hook: "Frontend prototype waste-reporting UI with chatbot and maps.",
+    slug: "nagarsaarthi",
+    shortDesc: "Citizen-focused waste reporting with an EcoSort chatbot and interactive maps.",
     content:
       "Citizens can report waste issues with images, use the EcoSort chatbot, and view reports on interactive maps. Municipal dashboards support hotspot monitoring.",
-    category: "Frontend",
-    measured: null,
-    safeguards: null,
-    tryIt: {
+    categories: ["Frontend", "AI Agents"],
+    tags: ["React", "Tailwind CSS", "React Router", "Leaflet"],
+    status: "featured",
+    links: {
       live: "https://adyaarchita.github.io/NagarSaarthi",
-      repo: null, // TODO(adya): add repo link
-      demo: null, // TODO(adya): add demo link
+      repo: "https://github.com/AdyaArchita/NagarSaarthi",
+      demo: null, // TODO: Add a verified demo link if available.
     },
-    stack: ["React"],
-    status: "more",
-    slug: "nagarsaarthi",
+    image: null,
   },
 ];
 
-export const projects = projectRecords.map((project) => {
-  const { hook, stack, tryIt, ...record } = project;
-
-  return {
-    ...record,
-    shortDesc: project.shortDesc || hook || project.title,
-    content: project.content || hook || project.shortDesc || project.title,
-    tags: Array.isArray(project.tags) ? project.tags : Array.isArray(stack) ? stack : [],
-    links: {
-      live: project.links?.live ?? tryIt?.live ?? null,
-      repo: project.links?.repo ?? tryIt?.repo ?? null,
-      demo: project.links?.demo ?? tryIt?.demo ?? null,
-    },
-    image: typeof project.image === "string" ? project.image : null,
-  };
-});
+export const projects = projectRecords.map((project) => ({
+  ...project,
+  shortDesc: project.shortDesc?.trim() || project.title,
+  content: project.content?.trim() || project.shortDesc?.trim() || project.title,
+  tags: Array.isArray(project.tags) ? project.tags : [],
+  categories: Array.isArray(project.categories) ? project.categories : [],
+  links: {
+    live: project.links?.live ?? null,
+    repo: project.links?.repo ?? null,
+    demo: project.links?.demo ?? null,
+  },
+  image: typeof project.image === "string" ? project.image : null,
+}));

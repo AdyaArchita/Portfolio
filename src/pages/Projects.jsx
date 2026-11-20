@@ -1,17 +1,43 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Flip } from "gsap/Flip";
 import { projects } from "../data/projects";
 import { ExternalLink, Github, Play } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Flip);
+
+const FILTER_CATEGORIES = ["All", "AI Agents", "Full-Stack", "ML", "Frontend"];
 
 export default function Projects() {
   const containerRef = useRef(null);
+  const previousLayout = useRef(null);
+  const [activeCategory, setActiveCategory] = useState("All");
 
-  const featuredProjects = projects.filter((p) => p.status === "featured");
+  const featuredProjects = projects.filter(
+    (project) =>
+      project.status === "featured" &&
+      (activeCategory === "All" || project.categories.includes(activeCategory))
+  );
   const moreProjects = projects.filter((p) => p.status === "more");
+
+  const filterProjects = (category) => {
+    if (category === activeCategory) return;
+    previousLayout.current = Flip.getState(".project-card");
+    setActiveCategory(category);
+  };
+
+  useLayoutEffect(() => {
+    if (!previousLayout.current) return;
+    Flip.from(previousLayout.current, {
+      duration: 0.4,
+      ease: "power2.out",
+      absolute: true,
+      prune: true,
+    });
+    previousLayout.current = null;
+  }, [activeCategory]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -55,7 +81,7 @@ export default function Projects() {
   return (
     <section ref={containerRef} className="bg-bg min-h-screen py-32 px-6 sm:px-12">
       <div className="max-w-7xl mx-auto">
-        <header className="projects-header mb-32">
+        <header className="projects-header mb-16">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 text-text">
             Recent Work
           </h1>
@@ -65,51 +91,49 @@ export default function Projects() {
           </p>
         </header>
 
+        <div className="mb-12 flex flex-wrap gap-3" role="group" aria-label="Filter featured projects">
+          {FILTER_CATEGORIES.map((category) => {
+            const isActive = activeCategory === category;
+            return (
+              <button
+                key={category}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => filterProjects(category)}
+                className={`rounded-full border px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible ${
+                  isActive
+                    ? "border-accent bg-accent text-on-accent hover:bg-accent-hover"
+                    : "border-border bg-transparent text-text hover:border-accent"
+                }`}
+              >
+                {category === "All" ? "All projects" : category}
+              </button>
+            );
+          })}
+        </div>
+
         {/* FEATURED PROJECTS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 mb-32">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10 mb-32">
           {featuredProjects.map((project) => (
             <article
               key={project.id}
-              className="project-card group flex flex-col p-10 bg-surface border border-border rounded-3xl hover:border-accent/40 transition-colors duration-500"
+              className="project-card group flex flex-col rounded-3xl border border-border bg-surface p-8 transition-[transform,border-color] duration-200 hover:-translate-y-1 hover:border-accent"
             >
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-3xl font-bold text-text tracking-tighter group-hover:text-accent transition-colors duration-300">
+              <div className="mb-6 flex items-start justify-between gap-4">
+                <h2 className="text-2xl font-bold tracking-tighter text-text group-hover:text-accent transition-colors duration-300">
                   <Link to={`/projects/${project.slug}`}>{project.title}</Link>
                 </h2>
-                {project.category && (
-                  <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-muted border border-border rounded-full">
-                    {project.category}
-                  </span>
-                )}
+                <span className="shrink-0 rounded-full border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-muted">
+                  {project.categories[0]}
+                </span>
               </div>
 
-              <p className="text-text/90 text-lg font-medium leading-relaxed tracking-tight mb-8 flex-grow">
+              <p className="mb-8 flex-grow text-base font-medium leading-relaxed tracking-tight text-text">
                 {project.shortDesc}
               </p>
 
-              {(project.measured || project.safeguards) && (
-                <div className="space-y-4 mb-10">
-                  {project.measured && (
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-widest text-muted block mb-1">
-                        Measured
-                      </span>
-                      <p className="text-sm font-medium text-text/80">{project.measured}</p>
-                    </div>
-                  )}
-                  {project.safeguards && (
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-widest text-muted block mb-1">
-                        Safeguards
-                      </span>
-                      <p className="text-sm font-medium text-text/80">{project.safeguards}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
               <div className="flex flex-wrap gap-2 mb-8">
-                {project.tags.slice(0, 5).map((tag) => (
+                {project.tags.map((tag) => (
                   <span
                     key={tag}
                     className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest rounded-full bg-bg border border-border text-muted"
