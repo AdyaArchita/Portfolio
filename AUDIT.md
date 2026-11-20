@@ -17,7 +17,7 @@
 | Path | Page | Notes |
 |---|---|---|
 | `/` | Home | Hero, profile image, achievements, selected projects, skills |
-| `/about` | About | Education, achievements, GitHub stats, skills |
+| `/about` | About | Education, selected projects, achievements, GitHub stats, skills |
 | `/projects` | Projects | Featured projects, category filters, additional projects |
 | `/projects/:slug` | Project detail | Direct slug lookup with a not-found state |
 | `/contact` | Contact | Validated contact form, email copy, social links |
@@ -27,7 +27,11 @@
 
 The project catalogue contains ten normalized records: six featured and four
 additional projects. Missing live/demo URLs remain `null`; the UI does not
-invent links.
+invent links. The six featured entries are KhataAgent, MetaHeck, IntelAI,
+Distribut, JobTracker, and NagarSaarthi; together they cover agentic AI,
+full-stack products, transactional backend work, and a civic-facing project.
+All ten records have repository URLs. JobTracker and NagarSaarthi have live
+URLs; no project has a separate demo URL.
 
 ## Theme and color audit
 
@@ -85,6 +89,26 @@ Open Graph and Twitter metadata point to the existing social preview image.
   animation code and CSS respect `prefers-reduced-motion`.
 - The hero stacks its text and image below the `lg` breakpoint, keeps the image
   at a 4:5 ratio, and avoids horizontal overflow at 375, 768, and 1440 pixels.
+- React Quill styles are lazy-loaded with the Dashboard route rather than the
+  main application entry.
+
+## Production bundle snapshot
+
+Fresh `npm run build` output (Vite 7.1.3):
+
+| Output | Raw | Gzip |
+|---|---:|---:|
+| Main JS entry | 256.70 kB | 89.36 kB |
+| Main CSS | 24.90 kB | 5.36 kB |
+| Dashboard JS (largest chunk) | 246.99 kB | 66.15 kB |
+| Dashboard-only CSS | 22.05 kB | 3.51 kB |
+| Admin Login JS | 114.03 kB | 37.59 kB |
+| Projects page JS | 33.10 kB | 12.07 kB |
+| ScrollTrigger JS | 43.96 kB | 18.26 kB |
+
+The editor and admin routes are lazy-loaded. The project curation/filter work
+uses the existing animation dependencies and adds no new package. The build
+reports that the local Browserslist database is 15 months old.
 
 ## External configuration and operational notes
 
@@ -92,21 +116,22 @@ Open Graph and Twitter metadata point to the existing social preview image.
   `http://localhost:5000/api`.
 - Contact uses EmailJS only when its service, template, and public-key
   variables are configured; otherwise it opens a prefilled `mailto:` message.
-- Admin routes are disabled unless `VITE_ENABLE_ADMIN=true`. The dashboard
-  keeps its bearer token in browser `localStorage`; the API must enforce
-  authorization independently of client-side route checks.
+- `.env.example` documents the frontend settings and defaults
+  `VITE_ENABLE_ADMIN=false`.
+- On `/dashboard`, `setAuthToken` reads the stored token before the initial
+  `GET /posts`; the shared Axios instance then sends that
+  `Authorization: Bearer ...` header with dashboard `GET`, `POST`, `PUT`, and
+  `DELETE` calls. Cookie credentials (`withCredentials`) are not configured.
+- Admin routes are disabled unless `VITE_ENABLE_ADMIN=true`. The backend must
+  validate the bearer token and authorize every protected endpoint; the UI
+  route guard is not a security boundary.
 - `npm run dev`, `npm run build`, and `npm run preview` are available. No test
   or lint script is defined in `package.json`.
 
-## Content awaiting owner confirmation
+## Unverified content
 
-The About page intentionally presents these as unverified draft entries rather
-than confirmed experience:
-
-1. Hack With Zairza community-tooling role, period, and outcome.
-2. Zairza platform-redesign title, scope, and performance result.
-3. Whether the NagarSaarthi AQI/LSTM claim is a separate project or should be
-   removed.
-
-Achievement claims currently shown on Home were confirmed by the owner during
-this refresh. Project live/demo links that are not verified remain unset.
+Unverified draft entries have been removed from rendered pages and preserved
+in [`docs/TODO-unverified.md`](docs/TODO-unverified.md). The published
+NagarSaarthi description remains focused on waste reporting and related civic
+features. Achievement claims currently shown on Home were confirmed by the
+owner during the previous refresh.
