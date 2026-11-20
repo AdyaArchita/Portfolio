@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
 import { achievements } from "../data/achievements";
 import { projects } from "../data/projects";
@@ -8,30 +7,10 @@ import GitHubStats from "../components/sections/GitHubStats";
 import GroupedSkills from "../components/sections/GroupedSkills";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const education = {
   degree: "B.Tech in Computer Science",
   institution: "Odisha University of Technology & Research (OUTR), Bhubaneswar",
 };
-
-const pendingConfirmations = [
-  {
-    title: "Hack With Zairza — community tooling",
-    detail:
-      "TODO: Confirm — the current draft lists a contributor role and community-tooling work. Confirm the project, role, period, and outcome before publishing.",
-  },
-  {
-    title: "Zairza Technical Society — platform redesign",
-    detail:
-      "TODO: Confirm — the current draft uses “Frontend Architect” and includes an unverified performance result. Confirm the title, scope, and result before publishing.",
-  },
-  {
-    title: "NagarSaarthi — AQI/LSTM claim",
-    detail:
-      "TODO: Confirm — the current draft links an AQI-prediction model to NagarSaarthi, but its current repository description is about waste reporting. Confirm whether this is a separate project or remove the entry.",
-  },
-];
 
 export default function About() {
   const containerRef = useRef(null);
@@ -61,14 +40,6 @@ export default function About() {
         ease: "power3.out",
       });
 
-      gsap.from(".timeline-item", {
-        scrollTrigger: { trigger: ".timeline-section", start: "top 85%" },
-        opacity: 0,
-        y: 16,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power2.out",
-      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -206,37 +177,6 @@ export default function About() {
                   </li>
                 ))}
               </ol>
-            </section>
-
-            <section
-              aria-labelledby="projects-hackathons-heading"
-              className="timeline-section space-y-6"
-            >
-              <div>
-                <h2
-                  id="projects-hackathons-heading"
-                  className="text-xs font-bold uppercase tracking-[0.2em] text-muted"
-                >
-                  Projects &amp; Hackathons
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  The following draft entries need confirmation before they can
-                  be presented as verified work.
-                </p>
-              </div>
-              <ul className="space-y-4">
-                {pendingConfirmations.map((item) => (
-                  <li
-                    key={item.title}
-                    className="timeline-item rounded-2xl border border-border bg-surface p-6"
-                  >
-                    <h3 className="font-bold text-text">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">
-                      {item.detail}
-                    </p>
-                  </li>
-                ))}
-              </ul>
             </section>
 
             <section aria-label="Technical skills">

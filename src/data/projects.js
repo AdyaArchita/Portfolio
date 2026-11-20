@@ -94,7 +94,6 @@ const projectRecords = [
     categories: ["Full-Stack", "AI Agents"],
     tags: ["MERN", "TypeScript", "JWT", "@dnd-kit", "React Query", "OpenAI"],
     status: "featured",
-    note: "The live demo may take about 30 seconds to wake.",
     links: {
       live: "https://jobtracker-frontend-574d.onrender.com",
       repo: "https://github.com/AdyaArchita/JobTracker",
