@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { gsap } from "gsap";
 import { projects } from "../data/projects";
@@ -17,6 +17,7 @@ export default function ProjectDetail() {
   const { slug } = useParams();
   const project = projects.find((item) => item.slug === slug);
   const headerRef = useRef(null);
+  const [unavailableImage, setUnavailableImage] = useState(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -112,7 +113,7 @@ export default function ProjectDetail() {
           </div>
         </div>
 
-        {imageSrc && (
+        {imageSrc && unavailableImage !== imageSrc && (
           <div className="project-image-box relative mx-auto aspect-video max-w-7xl overflow-hidden rounded-3xl border border-border bg-surface">
             <img
               src={imageSrc}
@@ -121,8 +122,9 @@ export default function ProjectDetail() {
               width="1920"
               height="1080"
               className="h-full w-full object-cover"
-              onError={(event) => {
-                event.currentTarget.src = "/placeholder.svg";
+              onError={() => {
+                console.warn(`Unable to load project image for ${project.slug}: ${imageSrc}`);
+                setUnavailableImage(imageSrc);
               }}
             />
           </div>

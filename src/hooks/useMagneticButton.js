@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import usePrefersReducedMotion from "./usePrefersReducedMotion";
 
 /**
  * Applies a magnetic pull effect to ref'd elements.
@@ -11,8 +12,11 @@ import { gsap } from "gsap";
  */
 export function useMagneticButton() {
   const refs = useRef([]);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const cleanups = refs.current.map((btn) => {
       if (!btn) return () => {};
 
@@ -37,7 +41,7 @@ export function useMagneticButton() {
     });
 
     return () => cleanups.forEach((fn) => fn());
-  }, []);
+  }, [prefersReducedMotion]);
 
   const addRef = (el) => {
     if (el && !refs.current.includes(el)) {

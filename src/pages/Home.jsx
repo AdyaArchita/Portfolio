@@ -6,6 +6,7 @@ import { projects as allProjects } from "../data/projects";
 import { achievements } from "../data/achievements";
 import { skillCategories } from "../data/skills";
 import { site } from "../data/site";
+import { useMagneticButton } from "../hooks/useMagneticButton";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,10 +14,10 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const heroRef = useRef(null);
   const bentoRef = useRef(null);
-  const magneticRefs = useRef([]);
   const [profileAvailable, setProfileAvailable] = useState(true);
   const [profileUseWebp, setProfileUseWebp] = useState(true);
   const [roleIndex, setRoleIndex] = useState(0);
+  const addToMagnetic = useMagneticButton();
   const prefersReducedMotion = usePrefersReducedMotion();
   const roles = ["Full-Stack", "AI Agents", "Data & ML"];
 
@@ -29,21 +30,6 @@ export default function Home() {
     if (prefersReducedMotion) return undefined;
 
     const ctx = gsap.context(() => {
-      magneticRefs.current.forEach((btn) => {
-        if (!btn) return;
-        const moveBtn = (e) => {
-          const rect = btn.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-          gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.3, ease: "power2.out" });
-        };
-        const resetBtn = () => {
-          gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
-        };
-        btn.addEventListener("mousemove", moveBtn);
-        btn.addEventListener("mouseleave", resetBtn);
-      });
-
       gsap.fromTo(
         ".bento-item",
         { y: 60, opacity: 0 },
@@ -76,12 +62,6 @@ export default function Home() {
 
     return () => window.clearInterval(interval);
   }, [roles.length, prefersReducedMotion]);
-
-  const addToMagnetic = (el) => {
-    if (el && !magneticRefs.current.includes(el)) {
-      magneticRefs.current.push(el);
-    }
-  };
 
   return (
     <section
