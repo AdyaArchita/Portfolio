@@ -139,7 +139,7 @@ export default function Home() {
               <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Naukri Campus Young Turks</p>
             </div>
             <div>
-              <p className="text-3xl font-bold tracking-tighter text-accent">Top 15k</p>
+              <p className="text-3xl font-bold tracking-tighter text-accent">Top 15%</p>
               <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Google Big Code</p>
             </div>
           </div>
@@ -148,7 +148,7 @@ export default function Home() {
         {/* Right: Profile Image */}
         {profileAvailable && (
           <div className="w-full lg:w-2/5 order-2 lg:order-2">
-            <div className="relative aspect-[4/5] w-full max-w-[320px] mx-auto rounded-3xl overflow-hidden border border-border bg-surface">
+            <div className="relative aspect-[4/5] w-full max-w-[320px] lg:max-w-sm mx-auto rounded-3xl overflow-hidden border border-border bg-surface">
               <picture className="block h-full w-full">
                 {profileUseWebp && (
                   <source type="image/webp" srcSet="/profile.webp" />

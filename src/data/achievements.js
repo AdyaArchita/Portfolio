@@ -11,7 +11,7 @@ export const achievements = [
   },
   {
     title: "Google Big Code",
-    result: "Top 15k",
-    detail: "Placed in the top 15k.",
+    result: "Top 15% · 100,000+ competitors",
+    detail: "Google Big Code 2026.",
   },
 ];
