@@ -14,24 +14,7 @@ export const skillCategories = [
   },
 ];
 
-/** Used in About skill tag cloud */
-export const allSkills = [
-  "React",
-  "Next.js",
-  "GSAP",
-  "Tailwind CSS",
-  "Node.js",
-  "Express",
-  "MongoDB",
-  "Firebase",
-  "SQL",
-  "TypeScript",
-  "LangChain",
-  "RAG Pipelines",
-  "Figma",
-];
-
-/** Used in Phase 5 grouped proficiency UI */
+/** Used in About grouped skills section */
 export const groupedSkills = [
   {
     group: "Frontend",

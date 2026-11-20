@@ -7,9 +7,9 @@ import { groupedSkills } from "../../data/skills";
 export default function GroupedSkills() {
   return (
     <div className="space-y-8">
-      <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
-        Proficiency
-      </h3>
+      <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
+        Technical Skills
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {groupedSkills.map((category) => (
           <div key={category.group} className="space-y-4">
