@@ -80,10 +80,9 @@ export default function About() {
           <h1 className="mb-6 text-6xl font-bold tracking-tighter md:text-8xl">
             About.
           </h1>
-          <p className="max-w-2xl text-lg font-medium leading-relaxed text-muted md:text-xl">
-            I&apos;m a Computer Science student at OUTR building full-stack and
-            AI-driven web applications, with interests in machine learning,
-            AI agents, and frontend engineering.
+          <p className="max-w-2xl text-base font-medium leading-relaxed text-muted md:text-xl">
+            Computer Science student at OUTR building full-stack and AI-driven
+            apps, exploring ML, AI agents, and frontend engineering.
           </p>
         </header>
 

@@ -139,7 +139,7 @@ export default function Home() {
               <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Naukri Campus Young Turks</p>
             </div>
             <div>
-              <p className="text-3xl font-bold tracking-tighter text-accent">Top 15%</p>
+              <p className="text-3xl font-bold tracking-tighter text-accent">Top 15k</p>
               <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Google Big Code</p>
             </div>
           </div>
