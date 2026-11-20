@@ -98,7 +98,6 @@ export default function About() {
                 className="w-full h-full object-cover"
                 onError={(e) => { e.target.src = "/placeholder.svg"; }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-bg/40 to-transparent" />
             </div>
           </div>
 

@@ -13,6 +13,7 @@ export default function Home() {
   const bentoRef = useRef(null);
   const magneticRefs = useRef([]);
   const [profileAvailable, setProfileAvailable] = useState(true);
+  const [profileUseWebp, setProfileUseWebp] = useState(true);
 
   // Show first 3 project titles in the bento
   const featuredTitles = allProjects.slice(0, 3).map((p) => p.title);
@@ -162,18 +163,29 @@ export default function Home() {
         {profileAvailable && (
           <div className="w-full lg:w-2/5 order-2 lg:order-2">
             <div className="relative aspect-[4/5] w-full max-w-[320px] lg:max-w-sm mx-auto rounded-3xl overflow-hidden border border-border bg-surface">
-              <img
-                src="/profile.png"
-                alt="Adya Archita Pattnaik"
-                loading="eager"
-                width="480"
-                height="600"
-                className="w-full h-full object-cover"
-                onError={() => {
-                  console.warn("Unable to load hero profile image: /profile.png");
-                  setProfileAvailable(false);
-                }}
-              />
+              <picture className="block h-full w-full">
+                {profileUseWebp && (
+                  <source type="image/webp" srcSet="/profile.webp" />
+                )}
+                <img
+                  src="/profile.png"
+                  alt="Adya Archita Pattnaik"
+                  loading="eager"
+                  fetchPriority="high"
+                  width="800"
+                  height="1000"
+                  className="h-full w-full object-cover"
+                  onError={() => {
+                    if (profileUseWebp) {
+                      setProfileUseWebp(false);
+                      return;
+                    }
+
+                    console.warn("Unable to load hero profile image: /profile.png");
+                    setProfileAvailable(false);
+                  }}
+                />
+              </picture>
             </div>
           </div>
         )}
@@ -185,7 +197,7 @@ export default function Home() {
         className="max-w-7xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-12 gap-8 w-full"
       >
         {/* Selected Works */}
-        <div className="bento-item md:col-span-5 p-12 rounded-[3rem] bg-surface border border-border flex flex-col justify-between group hover:border-accent/40 transition-all duration-500 shadow-xl">
+        <div className="bento-item md:col-span-5 p-12 rounded-[3rem] bg-surface border border-border flex flex-col justify-between group hover:border-accent/40 transition-all duration-500">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-muted mb-12">
               Selected Works
