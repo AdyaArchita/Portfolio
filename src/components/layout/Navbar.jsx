@@ -1,7 +1,9 @@
 import { useContext, useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { Menu, X } from "lucide-react";
+import { motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
+import usePrefersReducedMotion from "../../hooks/usePrefersReducedMotion";
 
 const ADMIN_ENABLED = import.meta.env.VITE_ENABLE_ADMIN === "true";
 
@@ -10,6 +12,16 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const { pathname } = useLocation();
+  const activeRoute = pathname.startsWith("/projects/") ? "/projects" : pathname;
+  const [activeSection, setActiveSection] = useState(activeRoute);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const { scrollY, scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   const isAuthenticated = localStorage.getItem("token");
 
@@ -21,36 +33,48 @@ export default function Navbar() {
     { name: "Contact",  path: "/contact" },
   ];
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    const updateScroll = () => {
-      handleScroll();
-      const scrollableHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress =
-        scrollableHeight > 0 ? (window.scrollY / scrollableHeight) * 100 : 0;
-      setScrollProgress(Math.min(100, Math.max(0, progress)));
-    };
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 20);
+  });
 
-    updateScroll();
-    window.addEventListener("scroll", updateScroll, { passive: true });
-    window.addEventListener("resize", updateScroll);
-    return () => {
-      window.removeEventListener("scroll", updateScroll);
-      window.removeEventListener("resize", updateScroll);
-    };
-  }, []);
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    setScrollProgress(Math.round(latest * 100));
+  });
+
+  useEffect(() => {
+    setScrolled(window.scrollY > 20);
+    setActiveSection(activeRoute);
+
+    const section = document.querySelector("[data-nav-section]");
+    if (!section || !("IntersectionObserver" in window)) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActiveSection(section.dataset.navSection || activeRoute);
+        }
+      },
+      { rootMargin: "-10% 0px -80% 0px" }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [activeRoute]);
 
   return (
     <>
-      <div
+      <motion.div
         role="progressbar"
         aria-label="Page scroll progress"
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow={Math.round(scrollProgress)}
         className="fixed left-0 top-0 z-[60] h-0.5 bg-accent"
-        style={{ width: `${scrollProgress}%` }}
+        style={
+          prefersReducedMotion
+            ? { width: `${scrollProgress}%` }
+            : { scaleX: smoothProgress, transformOrigin: "0% 50%" }
+        }
       />
       <nav
         aria-label="Primary navigation"
@@ -75,9 +99,9 @@ export default function Navbar() {
                 key={link.name}
                 to={link.path}
                 end={link.path === "/"}
-                className={({ isActive }) =>
-                  `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:text-accent ${
-                    isActive ? "text-accent" : "text-muted"
+                className={() =>
+                  `link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-300 hover:text-accent ${
+                    activeSection === link.path ? "text-accent" : "text-muted"
                   }`
                 }
               >
@@ -89,7 +113,7 @@ export default function Navbar() {
               <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
-                  `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:text-accent ${
+                  `link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-300 hover:text-accent ${
                     isActive ? "text-accent" : "text-muted"
                   }`
                 }
@@ -102,7 +126,7 @@ export default function Navbar() {
               <button
                 onClick={toggleTheme}
                 aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                className="text-lg hover:scale-110 transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                className="text-lg transition-transform motion-safe:hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 {darkMode ? "☀️" : "🌙"}
               </button>
@@ -168,9 +192,9 @@ export default function Navbar() {
               to={link.path}
               end={link.path === "/"}
               onClick={() => setIsOpen(false)}
-              className={({ isActive }) =>
-                `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 ${
-                  isActive ? "text-accent" : "text-muted"
+              className={() =>
+                `link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
+                activeSection === link.path ? "text-accent" : "text-muted"
                 }`
               }
             >
@@ -184,7 +208,7 @@ export default function Navbar() {
                 to="/dashboard"
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
-                  `text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 ${
+                  `link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
                     isActive ? "text-accent" : "text-muted"
                   }`
                 }

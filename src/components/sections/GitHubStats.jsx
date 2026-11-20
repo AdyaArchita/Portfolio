@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { site } from "../../data/site";
+import Reveal from "../motion/Reveal";
 
 /**
  * Fetches public GitHub stats for the username in src/data/site.js.
@@ -62,24 +63,22 @@ export default function GitHubStats() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-4">
-        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
-          GitHub Activity
-        </h3>
+      <Reveal as="div" className="flex items-center gap-4">
+        <h3 className="section-kicker">06 / GITHUB ACTIVITY</h3>
         <a
           href={`https://github.com/${site.github}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-bold text-accent hover:underline underline-offset-4 tracking-widest"
+          className="link-underline font-mono text-xs font-medium text-accent tracking-widest"
         >
           @{site.github} →
         </a>
-      </div>
+      </Reveal>
 
       {status === "loading" && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="p-6 rounded-2xl bg-surface border border-border animate-pulse h-24" />
+            <div key={i} className="p-6 rounded-2xl bg-surface border border-border h-24" />
           ))}
         </div>
       )}
@@ -92,18 +91,21 @@ export default function GitHubStats() {
 
       {status === "ready" && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {statItems.map((item) => (
-            <div
+          {statItems.map((item, index) => (
+            <Reveal
+              as="div"
               key={item.label}
-              className="p-6 rounded-2xl bg-surface border border-border hover:border-accent/40 transition-all duration-300 group"
+              className="p-6 rounded-2xl bg-surface border border-border hover:border-accent/40 transition-colors duration-300 group"
+              stagger={0.08}
+              index={index}
             >
-              <p className="text-3xl font-bold tracking-tighter text-text group-hover:text-accent transition-colors">
+              <p className="font-display text-3xl font-bold tracking-tighter text-text group-hover:text-accent transition-colors">
                 {item.value}
               </p>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted mt-2">
+              <p className="font-mono text-xs uppercase tracking-widest text-muted mt-2">
                 {item.label}
               </p>
-            </div>
+            </Reveal>
           ))}
         </div>
       )}

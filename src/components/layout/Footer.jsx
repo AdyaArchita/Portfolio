@@ -33,7 +33,7 @@ export default function Footer() {
                 <li key={l.label}>
                   <Link
                     to={l.path}
-                    className="text-xs font-bold uppercase tracking-[0.2em] text-muted hover:text-accent transition-colors duration-300"
+                    className="link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] text-muted hover:text-accent transition-colors duration-300"
                   >
                     {l.label}
                   </Link>
@@ -54,7 +54,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
-                    className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all duration-300"
+                    className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-colors duration-300"
                   >
                     <Icon size={14} />
                   </a>
@@ -65,7 +65,7 @@ export default function Footer() {
             <a
               href={site.resumePath}
               download="Adya-Archita-Pattnaik-Resume.pdf"
-              className="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-accent hover:underline underline-offset-4"
+              className="link-underline inline-flex items-center gap-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent"
             >
               Resume
             </a>
@@ -74,10 +74,10 @@ export default function Footer() {
 
         {/* Bottom row */}
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-muted tracking-widest">
+          <p className="font-mono text-xs text-muted tracking-widest">
             © {year} {site.name}. All rights reserved.
           </p>
-          <p className="text-xs text-muted tracking-widest">
+          <p className="font-mono text-xs text-muted tracking-widest">
             Built with React + GSAP + Tailwind CSS
           </p>
         </div>

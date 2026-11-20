@@ -1,3 +1,15 @@
+@import "@fontsource/fraunces/latin-400.css";
+@import "@fontsource/fraunces/latin-400-italic.css";
+@import "@fontsource/fraunces/latin-600.css";
+@import "@fontsource/fraunces/latin-700.css";
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/jetbrains-mono/latin-400.css";
+@import "@fontsource/jetbrains-mono/latin-500.css";
+@import "@fontsource/jetbrains-mono/latin-700.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -49,8 +61,8 @@
     --color-bg:           20 18 17;
     --color-surface:      29 26 24;
     --color-border:       43 38 34;
-    --color-text:         237 230 223;
-    --color-muted:        163 154 144;
+    --color-text:         237 230 221;
+    --color-muted:        154 145 138;
     --color-accent:       224 113 74;
     --color-accent-hover: 236 138 100;
     --color-on-accent:    20 18 17;
@@ -63,15 +75,21 @@
   }
 
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
     background-color: rgb(var(--color-bg));
     color: rgb(var(--color-text));
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
+  h1, h2, h3 {
+    font-family: "Fraunces", serif;
     font-weight: 700;
+  }
+
+  h4, h5, h6 {
+    font-family: "Inter", sans-serif;
   }
 
   a {
@@ -130,6 +148,96 @@
 
 }
 
+@layer components {
+  .section-kicker {
+    color: rgb(var(--color-muted));
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .prose-copy {
+    max-width: 65ch;
+    line-height: 1.65;
+  }
+
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .link-underline::after {
+    position: absolute;
+    right: 0;
+    bottom: -0.15em;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 240ms ease-out;
+  }
+
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  .project-card img {
+    transition: transform 500ms ease-out;
+  }
+
+  .project-card:hover img {
+    transform: scale(1.03);
+  }
+
+  .tech-marquee {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-block: 1px solid rgb(var(--color-border));
+  }
+
+  .tech-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: tech-marquee-scroll 48s linear infinite;
+  }
+
+  .tech-marquee:hover .tech-marquee-track {
+    animation-play-state: paused;
+  }
+
+  .tech-marquee-item {
+    padding: 1rem 1.5rem;
+    color: rgb(var(--color-muted));
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}
+
+.noise-overlay {
+  position: fixed;
+  z-index: 40;
+  pointer-events: none;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+@keyframes tech-marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @layer utilities {
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -145,6 +253,23 @@
     .role-word {
       animation: none !important;
       opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .tech-marquee {
+      display: none !important;
+    }
+
+    .tech-marquee-track,
+    .link-underline::after,
+    .project-card img {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+
+    [class*="translate"],
+    [class*="scale"] {
       transform: none !important;
     }
   }

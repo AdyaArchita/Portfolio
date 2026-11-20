@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
 import emailjs from "@emailjs/browser";
 import { socialLinks } from "../data/social";
 import { site } from "../data/site";
-import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import Reveal from "../components/motion/Reveal";
 
 const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || "";
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "";
@@ -11,39 +10,14 @@ const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY   || "";
 const USE_EMAILJS      = Boolean(EMAILJS_SERVICE && EMAILJS_TEMPLATE && EMAILJS_KEY);
 
 export default function Contact() {
-  const containerRef = useRef(null);
   const formRef = useRef(null);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [charsLeft, setCharsLeft] = useState(200);
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errors, setErrors] = useState({ name: "", email: "", message: "" });
   const [copyStatus, setCopyStatus] = useState("idle");
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => setCharsLeft(200 - form.message.length), [form.message]);
-
-  useEffect(() => {
-    if (prefersReducedMotion) return undefined;
-
-    const ctx = gsap.context(() => {
-      gsap.from(".contact-header > *", {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-      });
-      gsap.from(".contact-form", {
-        opacity: 0,
-        y: 60,
-        duration: 1.2,
-        ease: "power3.out",
-        delay: 0.4,
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [prefersReducedMotion]);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -116,7 +90,7 @@ export default function Contact() {
 
   return (
     <section
-      ref={containerRef}
+      data-nav-section="/contact"
       className="min-h-screen bg-bg text-text pt-32 pb-32 px-6 sm:px-12"
     >
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-24">
@@ -124,30 +98,34 @@ export default function Contact() {
         {/* Left: Info + Socials */}
         <div className="contact-header lg:w-1/2 space-y-12">
           <header className="space-y-6">
-            <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-tight">
+            <p className="section-kicker">01 / CONTACT</p>
+            <Reveal
+              as="h1"
+              className="font-display text-6xl md:text-8xl font-bold tracking-tighter leading-tight"
+            >
               Let&apos;s build <br /> something.
-            </h1>
-            <p className="text-2xl font-medium tracking-tight text-muted">
+            </Reveal>
+            <Reveal as="p" className="prose-copy text-2xl font-medium tracking-tight text-muted">
               Have a question or a project in mind? I&apos;m always open to
               discussing new opportunities.
-            </p>
+            </Reveal>
           </header>
 
-          <div className="space-y-4 pt-12 border-t border-border">
-            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
-              Email
+          <Reveal as="div" className="space-y-4 pt-12 border-t border-border">
+            <h3 className="section-kicker">
+              02 / EMAIL
             </h3>
             <div className="flex flex-wrap items-center gap-4">
               <a
                 href={`mailto:${site.email}`}
-                className="text-lg font-semibold text-text hover:text-accent transition-colors"
+                className="link-underline text-lg font-semibold text-text hover:text-accent transition-colors"
               >
                 {site.email}
               </a>
               <button
                 type="button"
                 onClick={copyEmail}
-                className="rounded-full border border-border px-4 py-2 text-xs font-bold uppercase tracking-widest text-text hover:border-accent transition-colors"
+                className="font-mono rounded-full border border-border px-4 py-2 text-xs font-medium uppercase tracking-widest text-text hover:border-accent transition-colors"
               >
                 Copy email
               </button>
@@ -160,11 +138,11 @@ export default function Contact() {
                 </span>
               )}
             </div>
-          </div>
+          </Reveal>
 
-          <div className="space-y-4 pt-12 border-t border-border">
-            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
-              Connect
+          <Reveal as="div" className="space-y-4 pt-12 border-t border-border">
+            <h3 className="section-kicker">
+              03 / CONNECT
             </h3>
             <div className="flex flex-wrap gap-4">
               {socialLinks.map((link, i) => {
@@ -183,11 +161,11 @@ export default function Contact() {
                 );
               })}
             </div>
-          </div>
+          </Reveal>
         </div>
 
         {/* Right: Form */}
-        <div className="contact-form lg:w-1/2">
+        <Reveal as="div" className="contact-form lg:w-1/2">
           <form
             ref={formRef}
             onSubmit={handleSubmit}
@@ -197,7 +175,7 @@ export default function Contact() {
             <div className="space-y-2">
               <label
                 htmlFor="contact-name"
-                className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+                className="font-mono text-xs font-medium uppercase tracking-widest text-muted px-1"
               >
                 Full Name
               </label>
@@ -220,7 +198,7 @@ export default function Contact() {
             <div className="space-y-2">
               <label
                 htmlFor="contact-email"
-                className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+                className="font-mono text-xs font-medium uppercase tracking-widest text-muted px-1"
               >
                 Email Address
               </label>
@@ -243,7 +221,7 @@ export default function Contact() {
             <div className="space-y-2">
               <label
                 htmlFor="contact-message"
-                className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+                className="font-mono text-xs font-medium uppercase tracking-widest text-muted px-1"
               >
                 Message
               </label>
@@ -259,7 +237,7 @@ export default function Contact() {
                 className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 transition-all resize-none"
               />
               <div className="flex justify-between mt-2">
-                <p className="text-xs text-muted uppercase tracking-widest">
+                <p className="font-mono text-xs text-muted uppercase tracking-widest">
                   {charsLeft} characters remaining
                 </p>
                 {errors.message && (
@@ -271,7 +249,7 @@ export default function Contact() {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="group relative w-full py-6 bg-accent text-on-accent rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-all hover:bg-accent-hover hover:pr-12 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
+              className="group relative w-full py-6 bg-accent text-on-accent rounded-full font-mono font-medium uppercase tracking-[0.2em] text-xs transition-all hover:bg-accent-hover hover:pr-12 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <span>
                 {status === "sending" ? "Sending…" : "Send Message"}
@@ -285,22 +263,22 @@ export default function Contact() {
 
             {/* Status feedback */}
             {status === "success" && (
-              <p role="status" className="text-accent text-center font-bold text-sm tracking-widest uppercase animate-pulse">
+              <p role="status" className="font-mono text-accent text-center font-medium text-xs tracking-widest uppercase">
                 {USE_EMAILJS ? "Message Sent Successfully ✓" : "Opening your email client…"}
               </p>
             )}
             {status === "error" && (
-              <p role="alert" className="text-accent text-center font-bold text-sm tracking-widest uppercase">
+              <p role="alert" className="font-mono text-accent text-center font-medium text-xs tracking-widest uppercase">
                 Something went wrong. Please try again.
               </p>
             )}
             {!USE_EMAILJS && status === "idle" && (
-              <p className="text-muted text-center text-xs tracking-widest">
+              <p className="font-mono text-muted text-center text-xs tracking-widest">
                 Email service not configured — form will open your mail app.
               </p>
             )}
           </form>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

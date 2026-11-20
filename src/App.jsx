@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
-import Preloader from "./components/layout/Preloader";
+import SmoothScroll from "./components/layout/SmoothScroll";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import Footer from "./components/layout/Footer";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -18,15 +18,6 @@ const AdminLogin   = lazy(() => import("./pages/AdminLogin"));
 const Dashboard    = lazy(() => import("./pages/Dashboard"));
 const NotFound     = lazy(() => import("./pages/NotFound"));
 
-/** Minimal full-screen fallback shown while a chunk loads */
-function PageLoader() {
-  return (
-    <div className="min-h-screen bg-bg flex items-center justify-center">
-      <span className="w-6 h-6 rounded-full border-2 border-accent border-t-transparent animate-spin" />
-    </div>
-  );
-}
-
 function AdminRoute({ children, requireAuth = false }) {
   if (!ADMIN_ENABLED) return <NotFound />;
   if (requireAuth && !localStorage.getItem("token")) {
@@ -38,11 +29,12 @@ function AdminRoute({ children, requireAuth = false }) {
 function AppContent() {
   return (
     <div className="min-h-screen transition-colors duration-500">
-      <Preloader />
+      <SmoothScroll />
+      <div className="noise-overlay" aria-hidden="true" />
       <Navbar />
       <ScrollToTop />
       <main id="main-content">
-      <Suspense fallback={<PageLoader />}>
+      <Suspense fallback={null}>
         <Routes>
           <Route path="/"               element={<Home />} />
           <Route path="/projects"       element={<Projects />} />

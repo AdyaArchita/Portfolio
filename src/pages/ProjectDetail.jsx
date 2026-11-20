@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { gsap } from "gsap";
 import { projects } from "../data/projects";
-import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import Reveal from "../components/motion/Reveal";
 
 const caseStudies = {
   nagarsaarthi: {
@@ -16,33 +15,7 @@ const caseStudies = {
 export default function ProjectDetail() {
   const { slug } = useParams();
   const project = projects.find((item) => item.slug === slug);
-  const headerRef = useRef(null);
   const [unavailableImage, setUnavailableImage] = useState(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (!project || prefersReducedMotion) return undefined;
-
-    const ctx = gsap.context(() => {
-      gsap.from(".hero-content > *", {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-      });
-      if (project.image) {
-        gsap.from(".project-image-box", {
-          scale: 1.05,
-          opacity: 0,
-          duration: 1,
-          ease: "power2.out",
-        });
-      }
-    }, headerRef);
-
-    return () => ctx.revert();
-  }, [project, prefersReducedMotion]);
 
   if (!project) {
     return (
@@ -50,7 +23,7 @@ export default function ProjectDetail() {
         <p className="mb-8 text-2xl font-bold tracking-tighter">Project Not Found</p>
         <Link
           to="/projects"
-          className="text-xs font-bold uppercase tracking-widest text-accent hover:underline underline-offset-4"
+          className="link-underline font-mono text-xs font-medium uppercase tracking-widest text-accent"
         >
           ← Back to Projects
         </Link>
@@ -64,19 +37,20 @@ export default function ProjectDetail() {
     : null;
 
   return (
-    <div ref={headerRef} className="min-h-screen bg-bg pb-0">
+    <div data-nav-section="/projects" className="min-h-screen bg-bg pb-0">
       <section className="relative px-6 pt-32 sm:px-12">
-        <div className="hero-content mx-auto mb-24 max-w-7xl space-y-8">
+        <Reveal as="div" className="hero-content mx-auto mb-24 max-w-7xl space-y-8">
+          <p className="section-kicker">01 / PROJECT</p>
           <Link
             to="/projects"
-            className="inline-block text-xs font-bold uppercase tracking-widest text-accent hover:underline underline-offset-4"
+            className="link-underline inline-block font-mono text-xs font-medium uppercase tracking-widest text-accent"
           >
             ← All Projects
           </Link>
-          <h1 className="max-w-4xl text-6xl font-bold tracking-tighter text-text md:text-8xl lg:text-9xl">
+          <h1 className="font-display max-w-4xl text-6xl font-bold tracking-tighter text-text md:text-8xl lg:text-9xl">
             {project.title}
           </h1>
-          <p className="max-w-3xl text-2xl font-medium leading-tight tracking-tight text-muted md:text-3xl">
+          <p className="prose-copy max-w-3xl text-2xl font-medium leading-relaxed tracking-tight text-muted md:text-3xl">
             {project.shortDesc}
           </p>
           <div className="flex flex-wrap gap-8 pt-4">
@@ -85,7 +59,7 @@ export default function ProjectDetail() {
                 href={project.links.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-bold uppercase tracking-[0.2em] text-accent"
+                className="link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent"
               >
                 View Source →
               </a>
@@ -95,7 +69,7 @@ export default function ProjectDetail() {
                 href={project.links.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-bold uppercase tracking-[0.2em] text-text hover:text-accent transition-colors"
+                className="link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] text-text hover:text-accent transition-colors"
               >
                 Live Demo →
               </a>
@@ -105,13 +79,13 @@ export default function ProjectDetail() {
                 href={project.links.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-bold uppercase tracking-[0.2em] text-text hover:text-accent transition-colors"
+                className="link-underline font-mono text-xs font-medium uppercase tracking-[0.2em] text-text hover:text-accent transition-colors"
               >
                 Demo →
               </a>
             )}
           </div>
-        </div>
+        </Reveal>
 
         {imageSrc && unavailableImage !== imageSrc && (
           <div className="project-image-box relative mx-auto aspect-video max-w-7xl overflow-hidden rounded-3xl border border-border bg-surface">
@@ -133,44 +107,44 @@ export default function ProjectDetail() {
 
       <section className="mx-auto mt-32 grid max-w-7xl grid-cols-1 gap-16 px-6 pb-32 sm:px-12 lg:grid-cols-12 lg:gap-24">
         <div className="space-y-20 lg:col-span-8">
-          <div className="space-y-6">
-            <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Overview</h2>
-            <p className="text-xl font-medium leading-relaxed tracking-tight text-text">
+          <Reveal as="div" className="space-y-6">
+            <h2 className="section-kicker">02 / OVERVIEW</h2>
+            <p className="prose-copy text-xl font-medium leading-relaxed tracking-tight text-text">
               {project.content || project.shortDesc}
             </p>
-          </div>
+          </Reveal>
 
           {caseStudy && (
             <>
-              <div className="space-y-6 border-t border-border pt-12">
-                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Problem</h2>
-                <p className="text-xl font-medium leading-relaxed tracking-tight text-text">
+              <Reveal as="div" className="space-y-6 border-t border-border pt-12">
+                <h2 className="section-kicker">03 / PROBLEM</h2>
+                <p className="prose-copy text-xl font-medium leading-relaxed tracking-tight text-text">
                   {caseStudy.problem}
                 </p>
-              </div>
-              <div className="space-y-6 border-t border-border pt-12">
-                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Approach</h2>
-                <p className="text-xl font-medium leading-relaxed tracking-tight text-text">
+              </Reveal>
+              <Reveal as="div" className="space-y-6 border-t border-border pt-12">
+                <h2 className="section-kicker">04 / APPROACH</h2>
+                <p className="prose-copy text-xl font-medium leading-relaxed tracking-tight text-text">
                   {caseStudy.approach}
                 </p>
-              </div>
+              </Reveal>
             </>
           )}
         </div>
 
-        <aside className="space-y-6 pt-12 lg:col-span-4 lg:pt-0">
-          <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Stack</h2>
+        <Reveal as="aside" className="space-y-6 pt-12 lg:col-span-4 lg:pt-0">
+          <h2 className="section-kicker">05 / STACK</h2>
           <ul className="flex flex-wrap gap-3">
             {project.tags.map((tag) => (
               <li
                 key={tag}
-                className="rounded-full border border-border bg-surface px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted"
+                className="font-mono rounded-full border border-border bg-surface px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-muted"
               >
                 {tag}
               </li>
             ))}
           </ul>
-        </aside>
+        </Reveal>
       </section>
     </div>
   );

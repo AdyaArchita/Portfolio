@@ -1,19 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects as allProjects } from "../data/projects";
 import { achievements } from "../data/achievements";
 import { skillCategories } from "../data/skills";
 import { site } from "../data/site";
 import { useMagneticButton } from "../hooks/useMagneticButton";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
-
-gsap.registerPlugin(ScrollTrigger);
+import Reveal from "../components/motion/Reveal";
+import TechMarquee from "../components/sections/TechMarquee";
 
 export default function Home() {
-  const heroRef = useRef(null);
-  const bentoRef = useRef(null);
   const [profileAvailable, setProfileAvailable] = useState(true);
   const [profileUseWebp, setProfileUseWebp] = useState(true);
   const [roleIndex, setRoleIndex] = useState(0);
@@ -29,33 +25,6 @@ export default function Home() {
   useEffect(() => {
     if (prefersReducedMotion) return undefined;
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".bento-item",
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          stagger: 0.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: bentoRef.current,
-            start: "top 90%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-
-      setTimeout(() => ScrollTrigger.refresh(), 1000);
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, [prefersReducedMotion]);
-
-  useEffect(() => {
-    if (prefersReducedMotion) return undefined;
-
     const interval = window.setInterval(() => {
       setRoleIndex((current) => (current + 1) % roles.length);
     }, 2400);
@@ -65,7 +34,7 @@ export default function Home() {
 
   return (
     <section
-      ref={heroRef}
+      data-nav-section="/"
       className="min-h-screen bg-bg text-text pt-32 pb-32 px-6 sm:px-12 flex flex-col items-center selection:bg-accent selection:text-on-accent"
     >
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row justify-between items-center gap-16 lg:gap-24">
@@ -74,7 +43,8 @@ export default function Home() {
         <div className="flex flex-col gap-10 w-full lg:w-3/5 items-center lg:items-start text-center lg:text-left order-1 lg:order-1">
           <div className="space-y-6">
             <div className="overflow-hidden">
-              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9] text-text">
+              <p className="section-kicker mb-4">01 / HOME</p>
+              <h1 className="text-[clamp(3rem,8vw,7rem)] font-bold tracking-[-0.03em] leading-[1.02] text-text">
                 <span className="hero-word" style={{ "--hero-word-delay": "0ms" }}>Designing</span>{" "}
                 <span className="hero-word" style={{ "--hero-word-delay": "170ms" }}>Digital</span>
                 <br />
@@ -84,12 +54,15 @@ export default function Home() {
               </h1>
             </div>
             <div className="overflow-hidden">
-              <p className="text-xl md:text-2xl font-medium tracking-tight text-muted max-w-xl leading-relaxed">
+              <Reveal
+                as="p"
+                className="prose-copy max-w-xl text-xl md:text-2xl font-medium tracking-tight text-muted leading-relaxed"
+              >
                 I&apos;m Adya Archita Pattnaik, a B.Tech Computer Science student building full-stack and AI-driven web applications.
-              </p>
-              <p className="mt-4 text-sm font-bold uppercase tracking-[0.2em] text-muted">
+              </Reveal>
+              <p className="section-kicker mt-4">
                 Focus:{" "}
-                <span key={roles[roleIndex]} className="role-word text-text">
+                <span key={roles[roleIndex]} className="role-word font-sans text-sm font-semibold tracking-normal text-text">
                   {roles[roleIndex]}
                 </span>
               </p>
@@ -106,7 +79,6 @@ export default function Home() {
             </Link>
 
             <a
-              ref={addToMagnetic}
               href={site.resumePath}
               download="Adya-Archita-Pattnaik-Resume.pdf"
               className="px-10 py-5 rounded-full border border-border text-text font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-2 bg-transparent hover:border-accent transition-colors"
@@ -116,18 +88,18 @@ export default function Home() {
           </div>
 
           <div className="hero-stats grid w-full grid-cols-1 gap-6 border-t border-border pt-8 sm:grid-cols-3">
-            <div>
-              <p className="text-3xl font-bold tracking-tighter text-accent">{allProjects.length}</p>
-              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Projects listed</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold tracking-tighter text-accent">98.70 percentile</p>
-              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Naukri Campus Young Turks</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold tracking-tighter text-accent">Top 15k</p>
-              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-muted">Google Big Code</p>
-            </div>
+            <Reveal as="div" stagger={0.08} index={0}>
+              <p className="font-display text-3xl font-bold tracking-tighter text-accent">{allProjects.length}</p>
+              <p className="font-mono mt-2 text-xs uppercase tracking-widest text-muted">Projects listed</p>
+            </Reveal>
+            <Reveal as="div" stagger={0.08} index={1}>
+              <p className="font-display text-3xl font-bold tracking-tighter text-accent">98.70 percentile</p>
+              <p className="font-mono mt-2 text-xs uppercase tracking-widest text-muted">Naukri Campus Young Turks</p>
+            </Reveal>
+            <Reveal as="div" stagger={0.08} index={2}>
+              <p className="font-display text-3xl font-bold tracking-tighter text-accent">Top 15k</p>
+              <p className="font-mono mt-2 text-xs uppercase tracking-widest text-muted">Google Big Code</p>
+            </Reveal>
           </div>
         </div>
 
@@ -163,29 +135,45 @@ export default function Home() {
       </div>
 
       <section aria-labelledby="home-achievements" className="mx-auto mt-20 w-full max-w-7xl">
-        <h2 id="home-achievements" className="mb-6 text-xs font-bold uppercase tracking-[0.2em] text-muted">
+        <p className="section-kicker mb-3">02 / ACHIEVEMENTS</p>
+        <Reveal
+          as="h2"
+          id="home-achievements"
+          className="font-display mb-6 text-3xl font-semibold text-text"
+        >
           Achievements
-        </h2>
+        </Reveal>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {achievements.map((achievement) => (
-            <article key={achievement.title} className="rounded-2xl border border-border bg-surface p-6">
-              <h3 className="text-base font-bold text-text">{achievement.title}</h3>
-              <p className="mt-3 text-sm font-bold text-accent">{achievement.result}</p>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{achievement.detail}</p>
-            </article>
+          {achievements.map((achievement, index) => (
+            <Reveal
+              as="article"
+              key={achievement.title}
+              className="rounded-2xl border border-border bg-surface p-6"
+              stagger={0.08}
+              index={index}
+            >
+              <h3 className="font-display text-lg font-semibold text-text">{achievement.title}</h3>
+              <p className="font-mono mt-3 text-xs font-medium text-accent">{achievement.result}</p>
+              <p className="prose-copy mt-2 text-sm leading-relaxed text-muted">{achievement.detail}</p>
+            </Reveal>
           ))}
         </div>
       </section>
 
+      <TechMarquee />
+
       {/* Bento Grid */}
       <div
-        ref={bentoRef}
         className="max-w-7xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-12 gap-8 w-full"
       >
         {/* Selected Works */}
-        <div className="bento-item md:col-span-5 p-12 rounded-[3rem] bg-surface border border-border flex flex-col justify-between group hover:border-accent/40 transition-all duration-500">
+        <Reveal
+          as="div"
+          className="md:col-span-5 p-12 rounded-[3rem] bg-surface border border-border flex flex-col justify-between group hover:border-accent/40 transition-colors duration-500"
+        >
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-muted mb-12">
+            <p className="section-kicker mb-3">03 / SELECTED WORKS</p>
+            <h3 className="font-display text-2xl font-semibold text-text mb-12">
               Selected Works
             </h3>
             <div className="space-y-8">
@@ -202,33 +190,37 @@ export default function Home() {
           <div className="mt-16 flex justify-start">
             <Link
               to="/projects"
-              className="group flex items-center gap-4 text-xs font-bold uppercase tracking-[0.3em] text-accent"
+              className="link-underline group flex items-center gap-4 font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent"
             >
               Explore All
-              <span className="transform group-hover:translate-x-2 transition-transform duration-300">
+              <span className="transform motion-safe:group-hover:translate-x-2 transition-transform duration-300">
                 →
               </span>
             </Link>
           </div>
-        </div>
+        </Reveal>
 
         {/* Expertise */}
-        <div className="bento-item md:col-span-7 p-12 rounded-[3rem] bg-surface text-text flex flex-col border border-border relative overflow-hidden">
-          <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-muted mb-14">
+        <Reveal
+          as="div"
+          className="md:col-span-7 p-12 rounded-[3rem] bg-surface text-text flex flex-col border border-border relative overflow-hidden"
+        >
+          <p className="section-kicker mb-3">04 / CORE EXPERTISE</p>
+          <h3 className="font-display text-2xl font-semibold text-text mb-14">
             Core Expertise
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
             {skillCategories.map((cat, i) => (
               <div key={i} className="space-y-6">
-                <h4 className="text-xs font-bold uppercase tracking-widest text-accent">
+                <h4 className="font-mono text-xs font-medium uppercase tracking-widest text-accent">
                   {cat.title}
                 </h4>
                 <ul className="space-y-4">
                   {cat.skills.map((skill, si) => (
                     <li
                       key={si}
-                      className="text-lg font-bold tracking-tighter hover:translate-x-1 transition-all cursor-default"
+                      className="font-mono text-sm font-medium motion-safe:hover:translate-x-1 transition-transform cursor-default"
                     >
                       {skill}
                     </li>
@@ -239,13 +231,13 @@ export default function Home() {
           </div>
 
           <div className="mt-20 pt-16 border-t border-border">
-            <p className="text-4xl md:text-5xl font-bold tracking-tighter leading-[0.9] max-w-xl">
+            <p className="font-display text-4xl md:text-5xl font-bold tracking-tighter leading-[0.9] max-w-xl">
               Engineering{" "}
               <span className="text-muted italic">Future-Ready</span> <br />
               Digital Ecosystems.
             </p>
           </div>
-        </div>
+          </Reveal>
       </div>
     </section>
   );

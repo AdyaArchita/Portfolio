@@ -5,7 +5,7 @@ export const achievements = [
     detail: "Certificate of Merit; advanced to Round 2 — Rank #1579",
   },
   {
-    title: "Adobe iUniversity Hackathon",
+    title: "Adobe University Hackathon",
     result: "Advanced to Round 2",
     detail: "Advanced to Round 2.",
   },

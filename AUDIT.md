@@ -8,7 +8,8 @@
 |---|---|
 | UI | React 18.3.1, Vite 7.1.3, Tailwind CSS 3.4.17 |
 | Routing | React Router DOM 6.30.1; lazy-loaded page routes |
-| Motion | GSAP 3.15.0 / ScrollTrigger and Framer Motion 12.23.12 |
+| Typography | Local Fraunces, Inter, and JetBrains Mono via `@fontsource` |
+| Motion | Lenis 1.3.27, Framer Motion 12.23.12, GSAP 3.15.0 (magnetic CTA) |
 | Data | Static site, social, skill, achievement, and project records under `src/data/` |
 | External services | GitHub public API for profile stats; EmailJS when configured |
 
@@ -43,8 +44,8 @@ through `theme.extend.colors` in `tailwind.config.js`.
 | `bg` | `#141211` | `#FAF6F1` |
 | `surface` | `#1D1A18` | `#F2ECE4` |
 | `border` | `#2B2622` | `#E3D9CE` |
-| `text` | `#EDE6DF` | `#1F1A17` |
-| `muted` | `#A39A90` | `#6B6259` |
+| `text` | `#EDE6DD` | `#1F1A17` |
+| `muted` | `#9A918A` | `#6B6259` |
 | `accent` | `#E0714A` | `#AE4724` |
 | `accent-hover` | `#EC8A64` | `#943B1C` |
 | `on-accent` | `#141211` | `#FAF6F1` |
@@ -55,7 +56,7 @@ dark background colors.
 
 Contrast ratios were calculated from the token values using the WCAG relative
 luminance formula. The lowest tested normal-text pair is light-theme accent on
-surface at **4.80:1**; dark-theme muted on surface is **6.25:1**. Body text,
+surface at **4.80:1**; dark-theme muted on surface is **5.60:1**. Body text,
 muted text, accent links, and CTA text/background combinations tested are all
 at least 4.5:1.
 
@@ -85,10 +86,11 @@ Open Graph and Twitter metadata point to the existing social preview image.
   have labels and the mobile menu exposes expanded/hidden state.
 - Keyboard focus indicators, semantic headings/sections, labeled form controls,
   and accessible contact-form error descriptions are present.
-- The preloader is hidden from assistive technology and exits when complete;
-  animation code and CSS respect `prefers-reduced-motion`.
+- The preloader and route-loading spinner are removed. Lenis, the marquee, and
+  reveal/magnetic motion respect `prefers-reduced-motion`.
 - The hero stacks its text and image below the `lg` breakpoint, keeps the image
-  at a 4:5 ratio, and avoids horizontal overflow at 375, 768, and 1440 pixels.
+  at a 4:5 ratio, and avoids horizontal overflow at 360, 768, and 1440 pixels.
+- Fraunces, Inter, and JetBrains Mono load locally with `font-display: swap`.
 - React Quill styles are lazy-loaded with the Dashboard route rather than the
   main application entry.
 
@@ -98,17 +100,19 @@ Fresh `npm run build` output (Vite 7.1.3):
 
 | Output | Raw | Gzip |
 |---|---:|---:|
-| Main JS entry | 256.70 kB | 89.36 kB |
-| Main CSS | 24.96 kB | 5.38 kB |
+| Main JS entry | 322.69 kB | 105.55 kB |
+| Main CSS | 29.08 kB | 6.35 kB |
 | Dashboard JS (largest chunk) | 246.99 kB | 66.15 kB |
 | Dashboard-only CSS | 22.05 kB | 3.51 kB |
-| Admin Login JS | 114.03 kB | 37.59 kB |
-| Projects page JS | 33.12 kB | 12.09 kB |
-| ScrollTrigger JS | 43.96 kB | 18.26 kB |
+| Admin Login JS | 2.26 kB | 0.94 kB |
+| Home page JS | 79.11 kB | 30.55 kB |
+| Projects page JS | 8.00 kB | 2.38 kB |
 
-The editor and admin routes are lazy-loaded. The project curation/filter work
-uses the existing animation dependencies and adds no new package. The build
-reports that the local Browserslist database is 15 months old.
+The editor and admin routes are lazy-loaded. The main entry is 16.19 kB gzip
+larger than the previous snapshot (89.36 kB), remaining under the requested
+approximately 40 kB added-JavaScript budget. Local fonts are emitted as
+standalone WOFF/WOFF2 assets. The refreshed Browserslist database produces no
+build warning.
 
 ## External configuration and operational notes
 

@@ -1,21 +1,13 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Flip } from "gsap/Flip";
 import { projects } from "../data/projects";
 import { ExternalLink, Github, Play } from "lucide-react";
-import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
-
-gsap.registerPlugin(ScrollTrigger, Flip);
+import Reveal from "../components/motion/Reveal";
 
 const FILTER_CATEGORIES = ["All", "AI Agents", "Full-Stack", "ML", "Frontend"];
 
 export default function Projects() {
-  const containerRef = useRef(null);
-  const previousLayout = useRef(null);
   const [activeCategory, setActiveCategory] = useState("All");
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   const featuredProjects = projects.filter(
     (project) =>
@@ -26,80 +18,27 @@ export default function Projects() {
 
   const filterProjects = (category) => {
     if (category === activeCategory) return;
-    if (!prefersReducedMotion) {
-      previousLayout.current = Flip.getState(".project-card");
-    }
     setActiveCategory(category);
   };
 
-  useLayoutEffect(() => {
-    if (!previousLayout.current) return;
-    if (prefersReducedMotion) {
-      previousLayout.current = null;
-      return;
-    }
-    const animation = Flip.from(previousLayout.current, {
-      duration: 0.4,
-      ease: "power2.out",
-      absolute: true,
-      prune: true,
-    });
-    previousLayout.current = null;
-    return () => animation.kill();
-  }, [activeCategory, prefersReducedMotion]);
-
-  useEffect(() => {
-    if (prefersReducedMotion) return undefined;
-
-    const ctx = gsap.context(() => {
-      // Header Animation
-      gsap.from(".projects-header > *", {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-      });
-
-      // Batch Animation for Featured Cards
-      ScrollTrigger.batch(".project-card", {
-        onEnter: (elements) => {
-          gsap.fromTo(
-            elements,
-            { y: 60, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: "power3.out", overwrite: true }
-          );
-        },
-        once: true,
-      });
-
-      // Batch Animation for Compact Row
-      ScrollTrigger.batch(".compact-project-card", {
-        onEnter: (elements) => {
-          gsap.fromTo(
-            elements,
-            { y: 40, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", overwrite: true }
-          );
-        },
-        once: true,
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [prefersReducedMotion]);
-
   return (
-    <section ref={containerRef} className="bg-bg min-h-screen py-32 px-6 sm:px-12">
+    <section data-nav-section="/projects" className="bg-bg min-h-screen py-32 px-6 sm:px-12">
       <div className="max-w-7xl mx-auto">
         <header className="projects-header mb-16">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 text-text">
+          <p className="section-kicker mb-4">01 / PROJECTS</p>
+          <Reveal
+            as="h1"
+            className="font-display text-6xl md:text-8xl font-bold tracking-tighter mb-8 text-text"
+          >
             Recent Work
-          </h1>
-          <p className="text-muted max-w-3xl text-xl font-medium leading-relaxed tracking-tight">
+          </Reveal>
+          <Reveal
+            as="p"
+            className="prose-copy text-muted max-w-3xl text-xl font-medium leading-relaxed tracking-tight"
+          >
             A selection of projects that explore the intersection of design,
             technology, and user experience.
-          </p>
+          </Reveal>
         </header>
 
         <div className="mb-12 flex flex-wrap gap-3" role="group" aria-label="Filter featured projects">
@@ -111,7 +50,7 @@ export default function Projects() {
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => filterProjects(category)}
-                className={`rounded-full border px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible ${
+                className={`font-mono rounded-full border px-5 py-3 text-xs font-medium uppercase tracking-widest transition-colors focus-visible ${
                   isActive
                     ? "border-accent bg-accent text-on-accent hover:bg-accent-hover"
                     : "border-border bg-transparent text-text hover:border-accent"
@@ -125,21 +64,25 @@ export default function Projects() {
 
         {/* FEATURED PROJECTS */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10 mb-32">
-          {featuredProjects.map((project) => (
-            <article
+          {featuredProjects.map((project, index) => (
+            <Reveal
+              as="article"
               key={project.id}
-              className="project-card group flex flex-col rounded-3xl border border-border bg-surface p-8 transition-[transform,border-color] duration-200 hover:-translate-y-1 hover:border-accent"
+              layout
+              stagger={0.08}
+              index={index}
+              className="project-card group flex flex-col rounded-3xl border border-border bg-surface p-8 transition-[transform,border-color] duration-500 motion-safe:hover:-translate-y-1.5 hover:border-accent"
             >
               <div className="mb-6 flex items-start justify-between gap-4">
                 <h2 className="min-w-0 flex-1 break-words text-2xl font-bold tracking-tighter text-text group-hover:text-accent transition-colors duration-300">
-                  <Link to={`/projects/${project.slug}`}>{project.title}</Link>
+                  <Link className="link-underline" to={`/projects/${project.slug}`}>{project.title}</Link>
                 </h2>
-                <span className="shrink-0 rounded-full border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-muted">
+                <span className="font-mono shrink-0 rounded-full border border-border px-3 py-1 text-[10px] font-medium uppercase tracking-widest text-muted">
                   {project.categories[0]}
                 </span>
               </div>
 
-              <p className="mb-8 flex-grow text-base font-medium leading-relaxed tracking-tight text-text">
+              <p className="prose-copy mb-8 flex-grow text-base font-medium leading-relaxed tracking-tight text-text">
                 {project.shortDesc}
               </p>
 
@@ -147,7 +90,7 @@ export default function Projects() {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest rounded-full bg-bg border border-border text-muted"
+                    className="font-mono px-3 py-1.5 text-[10px] font-medium uppercase tracking-widest rounded-full bg-bg border border-border text-muted"
                   >
                     {tag}
                   </span>
@@ -161,13 +104,13 @@ export default function Projects() {
                       href={project.links.live}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-accent hover:text-accent-hover transition-colors focus-visible"
+                      className="link-underline font-mono flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-accent hover:text-accent-hover transition-colors focus-visible"
                       aria-label={`View live site for ${project.title}`}
                     >
                       <ExternalLink size={14} /> Live
                     </a>
                     {project.note && (
-                      <span className="text-[10px] text-muted tracking-widest uppercase ml-1">
+                      <span className="font-mono text-[10px] text-muted tracking-widest uppercase ml-1">
                         ({project.note})
                       </span>
                     )}
@@ -178,7 +121,7 @@ export default function Projects() {
                     href={project.links.repo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-text hover:text-accent transition-colors focus-visible"
+                    className="link-underline font-mono flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-text hover:text-accent transition-colors focus-visible"
                     aria-label={`View repository for ${project.title}`}
                   >
                     <Github size={14} /> Repo
@@ -189,45 +132,53 @@ export default function Projects() {
                     href={project.links.demo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-text hover:text-accent transition-colors focus-visible"
+                    className="link-underline font-mono flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-text hover:text-accent transition-colors focus-visible"
                     aria-label={`View demo for ${project.title}`}
                   >
                     <Play size={14} /> Demo
                   </a>
                 )}
               </div>
-            </article>
+            </Reveal>
           ))}
         </div>
 
         {/* MORE PROJECTS */}
         <div className="space-y-12 mb-32">
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted border-b border-border pb-4">
+          <p className="section-kicker">02 / MORE EXPLORATIONS</p>
+          <Reveal
+            as="h3"
+            className="font-display text-2xl font-semibold text-text border-b border-border pb-4"
+          >
             More Explorations
-          </h3>
+          </Reveal>
           <div className="grid grid-cols-1 gap-6">
-            {moreProjects.map((project) => (
-              <article
+            {moreProjects.map((project, index) => (
+              <Reveal
+                as="article"
                 key={project.id}
-                className="compact-project-card group flex flex-col md:flex-row md:items-center justify-between p-6 bg-surface border border-border rounded-2xl hover:border-accent/30 transition-colors duration-300 gap-6"
+                layout
+                stagger={0.08}
+                index={index}
+                className="compact-project-card group flex flex-col md:flex-row md:items-center justify-between p-6 bg-surface border border-border rounded-2xl transition-[transform,border-color] duration-500 motion-safe:hover:-translate-y-1.5 hover:border-accent gap-6"
               >
                 <div className="flex-1 space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                     <h4 className="text-xl font-bold text-text group-hover:text-accent transition-colors">
-                      <Link to={`/projects/${project.slug}`}>{project.title}</Link>
+                      <Link className="link-underline" to={`/projects/${project.slug}`}>{project.title}</Link>
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {project.tags.slice(0, 5).map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-1 text-[10px] font-bold uppercase tracking-widest rounded-md bg-bg border border-border text-muted"
+                          className="font-mono px-2 py-1 text-[10px] font-medium uppercase tracking-widest rounded-md bg-bg border border-border text-muted"
                         >
                           {tag}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <p className="text-sm font-medium text-muted tracking-tight">
+                  <p className="prose-copy text-base font-medium leading-relaxed text-muted tracking-tight">
                     {project.shortDesc}
                   </p>
                 </div>
@@ -267,7 +218,7 @@ export default function Projects() {
                     </a>
                   )}
                 </div>
-              </article>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -278,7 +229,7 @@ export default function Projects() {
             href="https://github.com/AdyaArchita"
             target="_blank"
             rel="noopener noreferrer"
-            className="group px-10 py-5 rounded-full bg-surface text-text border border-border font-bold uppercase tracking-[0.2em] text-xs hover:border-accent transition-colors flex items-center gap-3 focus-visible"
+            className="group px-10 py-5 rounded-full bg-surface text-text border border-border font-mono font-medium uppercase tracking-[0.2em] text-xs hover:border-accent transition-colors flex items-center gap-3 focus-visible"
           >
             <Github size={16} />
             All projects on GitHub

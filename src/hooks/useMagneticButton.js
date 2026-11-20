@@ -19,16 +19,32 @@ export function useMagneticButton() {
 
     const cleanups = refs.current.map((btn) => {
       if (!btn) return () => {};
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        return () => {};
+      }
 
       const moveBtn = (e) => {
         const rect = btn.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
-        gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.3, ease: "power2.out" });
+        const clamp = (value) => Math.max(-8, Math.min(8, value * 0.16));
+        gsap.to(btn, {
+          x: clamp(x),
+          y: clamp(y),
+          duration: 0.25,
+          ease: "power2.out",
+          overwrite: true,
+        });
       };
 
       const resetBtn = () => {
-        gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+        gsap.to(btn, {
+          x: 0,
+          y: 0,
+          duration: 0.45,
+          ease: "elastic.out(1, 0.3)",
+          overwrite: true,
+        });
       };
 
       btn.addEventListener("mousemove", moveBtn);
@@ -37,6 +53,8 @@ export function useMagneticButton() {
       return () => {
         btn.removeEventListener("mousemove", moveBtn);
         btn.removeEventListener("mouseleave", resetBtn);
+        gsap.killTweensOf(btn);
+        gsap.set(btn, { clearProps: "transform" });
       };
     });
 
