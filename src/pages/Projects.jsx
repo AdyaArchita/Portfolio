@@ -131,7 +131,7 @@ export default function Projects() {
               className="project-card group flex flex-col rounded-3xl border border-border bg-surface p-8 transition-[transform,border-color] duration-200 hover:-translate-y-1 hover:border-accent"
             >
               <div className="mb-6 flex items-start justify-between gap-4">
-                <h2 className="text-2xl font-bold tracking-tighter text-text group-hover:text-accent transition-colors duration-300">
+                <h2 className="min-w-0 flex-1 break-words text-2xl font-bold tracking-tighter text-text group-hover:text-accent transition-colors duration-300">
                   <Link to={`/projects/${project.slug}`}>{project.title}</Link>
                 </h2>
                 <span className="shrink-0 rounded-full border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-muted">

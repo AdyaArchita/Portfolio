@@ -99,11 +99,11 @@ Fresh `npm run build` output (Vite 7.1.3):
 | Output | Raw | Gzip |
 |---|---:|---:|
 | Main JS entry | 256.70 kB | 89.36 kB |
-| Main CSS | 24.90 kB | 5.36 kB |
+| Main CSS | 24.96 kB | 5.38 kB |
 | Dashboard JS (largest chunk) | 246.99 kB | 66.15 kB |
 | Dashboard-only CSS | 22.05 kB | 3.51 kB |
 | Admin Login JS | 114.03 kB | 37.59 kB |
-| Projects page JS | 33.10 kB | 12.07 kB |
+| Projects page JS | 33.12 kB | 12.09 kB |
 | ScrollTrigger JS | 43.96 kB | 18.26 kB |
 
 The editor and admin routes are lazy-loaded. The project curation/filter work
