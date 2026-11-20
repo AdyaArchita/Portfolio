@@ -1,10 +1,12 @@
 import React, { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Preloader from "./components/layout/Preloader";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import Footer from "./components/layout/Footer";
 import { ThemeProvider } from "./context/ThemeContext";
+
+const ADMIN_ENABLED = import.meta.env.VITE_ENABLE_ADMIN === "true";
 
 // Lazy-loaded pages — each becomes its own JS chunk
 const Home         = lazy(() => import("./pages/Home"));
@@ -25,6 +27,14 @@ function PageLoader() {
   );
 }
 
+function AdminRoute({ children, requireAuth = false }) {
+  if (!ADMIN_ENABLED) return <NotFound />;
+  if (requireAuth && !localStorage.getItem("token")) {
+    return <Navigate to="/admin" replace />;
+  }
+  return children;
+}
+
 function AppContent() {
   return (
     <div className="min-h-screen transition-colors duration-500">
@@ -39,8 +49,8 @@ function AppContent() {
           <Route path="/projects/:slug" element={<ProjectDetail />} />
           <Route path="/about"          element={<About />} />
           <Route path="/contact"        element={<Contact />} />
-          <Route path="/admin"          element={<AdminLogin />} />
-          <Route path="/dashboard"      element={<Dashboard />} />
+          <Route path="/admin"          element={<AdminRoute><AdminLogin /></AdminRoute>} />
+          <Route path="/dashboard"     element={<AdminRoute requireAuth><Dashboard /></AdminRoute>} />
           <Route path="*"              element={<NotFound />} />
         </Routes>
       </Suspense>
