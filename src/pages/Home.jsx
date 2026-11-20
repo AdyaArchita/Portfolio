@@ -6,6 +6,7 @@ import { projects as allProjects } from "../data/projects";
 import { achievements } from "../data/achievements";
 import { skillCategories } from "../data/skills";
 import { site } from "../data/site";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +17,7 @@ export default function Home() {
   const [profileAvailable, setProfileAvailable] = useState(true);
   const [profileUseWebp, setProfileUseWebp] = useState(true);
   const [roleIndex, setRoleIndex] = useState(0);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const roles = ["Full-Stack", "AI Agents", "Data & ML"];
 
   const featuredTitles = allProjects
@@ -24,6 +26,8 @@ export default function Home() {
     .map((project) => project.title);
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const ctx = gsap.context(() => {
       magneticRefs.current.forEach((btn) => {
         if (!btn) return;
@@ -61,15 +65,17 @@ export default function Home() {
     }, heroRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const interval = window.setInterval(() => {
       setRoleIndex((current) => (current + 1) % roles.length);
     }, 2400);
 
     return () => window.clearInterval(interval);
-  }, [roles.length]);
+  }, [roles.length, prefersReducedMotion]);
 
   const addToMagnetic = (el) => {
     if (el && !magneticRefs.current.includes(el)) {
@@ -113,10 +119,10 @@ export default function Home() {
           <div className="hero-btns flex flex-col sm:flex-row gap-8 items-center">
             <Link
               ref={addToMagnetic}
-              to="/projects"
+              to="/contact"
               className="group relative px-10 py-5 bg-accent text-on-accent rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-colors hover:bg-accent-hover"
             >
-              View Projects
+              Start a Project
             </Link>
 
             <a
@@ -125,7 +131,7 @@ export default function Home() {
               download="Adya-Archita-Pattnaik-Resume.pdf"
               className="px-10 py-5 rounded-full border border-border text-text font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-2 bg-transparent hover:border-accent transition-colors"
             >
-              Resume
+              Resume 2025
             </a>
           </div>
 
@@ -157,7 +163,6 @@ export default function Home() {
                   src="/profile.png"
                   alt="Adya Archita Pattnaik"
                   loading="eager"
-                  fetchPriority="high"
                   width="800"
                   height="1000"
                   className="h-full w-full object-cover"

@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { api, setAuthToken } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [err, setErr] = useState("");
   const navigate = useNavigate();
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const submit = async (e) => {
     e.preventDefault();
@@ -25,9 +27,13 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-bg px-4">
       <motion.div
         className="w-full max-w-md bg-surface border border-border rounded-[2rem] p-8"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+        animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+        transition={
+          prefersReducedMotion
+            ? { duration: 0 }
+            : { duration: 0.8, ease: "easeOut" }
+        }
       >
         <h1 className="text-2xl font-bold tracking-tighter text-text mb-6 text-center">
           Admin Login
@@ -45,7 +51,7 @@ export default function AdminLogin() {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
-            className="px-4 py-3 rounded-xl border border-border bg-surface text-text focus:border-accent focus:outline-none transition-all"
+            className="px-4 py-3 rounded-xl border border-border bg-surface text-text focus:border-accent focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 transition-all"
           />
           <label htmlFor="admin-password" className="text-xs font-bold uppercase tracking-widest text-muted">
             Password
@@ -58,7 +64,7 @@ export default function AdminLogin() {
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
-            className="px-4 py-3 rounded-xl border border-border bg-surface text-text focus:border-accent focus:outline-none transition-all"
+            className="px-4 py-3 rounded-xl border border-border bg-surface text-text focus:border-accent focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 transition-all"
           />
 
           <button

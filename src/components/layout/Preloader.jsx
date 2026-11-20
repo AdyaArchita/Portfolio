@@ -1,15 +1,18 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { gsap } from "gsap";
-
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+import usePrefersReducedMotion from "../../hooks/usePrefersReducedMotion";
 
 export default function Preloader() {
   // Show only once per session
+  const prefersReducedMotion = usePrefersReducedMotion();
   const alreadySeen = sessionStorage.getItem("preloader-seen");
-  const [progress, setProgress] = useState(alreadySeen ? 100 : 0);
+  const [progress, setProgress] = useState(
+    alreadySeen || prefersReducedMotion ? 100 : 0
+  );
   const [statusIndex, setStatusIndex] = useState(0);
-  const containerRef = useRef(null);
-
+  const [isVisible, setIsVisible] = useState(
+    !alreadySeen && !prefersReducedMotion
+  );
   const statuses = [
     "Initializing Core Modules",
     "Optimizing AI Service Layer",
@@ -22,7 +25,7 @@ export default function Preloader() {
   useEffect(() => {
     // If reduced motion or already seen this session, skip immediately
     if (prefersReducedMotion || sessionStorage.getItem("preloader-seen")) {
-      if (containerRef.current) containerRef.current.style.display = "none";
+      setIsVisible(false);
       sessionStorage.setItem("preloader-seen", "1");
       return;
     }
@@ -38,7 +41,7 @@ export default function Preloader() {
     }, 120);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     const nextStatus = Math.min(
@@ -47,40 +50,46 @@ export default function Preloader() {
     );
     setStatusIndex(nextStatus);
 
-    if (progress === 100) {
-      sessionStorage.setItem("preloader-seen", "1");
-      const tl = gsap.timeline({
-        onComplete: () => {
-          if (containerRef.current) {
-            containerRef.current.style.display = "none";
-          }
-        },
-      });
-
-      tl.to(".status-text", {
-        opacity: 0,
-        y: -20,
-        duration: 0.5,
-        ease: "power2.in",
-      })
-        .to(
-          ".progress-number",
-          { scale: 1.5, opacity: 0, duration: 0.8, ease: "power4.inOut" },
-          "-=0.3"
-        )
-        .to(".preloader-panel", {
-          height: 0,
-          duration: 1,
-          stagger: { each: 0.1, from: "center" },
-          ease: "power4.inOut",
-        });
+    if (progress !== 100) return undefined;
+    if (prefersReducedMotion || sessionStorage.getItem("preloader-seen")) {
+      setIsVisible(false);
+      return undefined;
     }
-  }, [progress]);
+
+    sessionStorage.setItem("preloader-seen", "1");
+    const tl = gsap.timeline({
+      onComplete: () => setIsVisible(false),
+    });
+    const hideFallback = window.setTimeout(() => setIsVisible(false), 3000);
+
+    tl.to(".status-text", {
+      opacity: 0,
+      y: -20,
+      duration: 0.5,
+      ease: "power2.in",
+    })
+      .to(
+        ".progress-number",
+        { scale: 1.5, opacity: 0, duration: 0.8, ease: "power4.inOut" },
+        "-=0.3"
+      )
+      .to(".preloader-panel", {
+        height: 0,
+        duration: 1,
+        stagger: { each: 0.1, from: "center" },
+        ease: "power4.inOut",
+      });
+    return () => {
+      tl.kill();
+      window.clearTimeout(hideFallback);
+    };
+  }, [progress, prefersReducedMotion]);
 
   return (
     <div
-      ref={containerRef}
+      aria-hidden="true"
       className="preloader-container fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden pointer-events-none"
+      style={{ display: isVisible ? "flex" : "none" }}
     >
       {/* Shutter Panels */}
       <div className="preloader-panel absolute top-0 left-0 w-full h-1/2 bg-bg z-20" />

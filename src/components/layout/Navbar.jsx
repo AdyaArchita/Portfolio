@@ -9,6 +9,7 @@ export default function Navbar() {
   const { darkMode, toggleTheme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const isAuthenticated = localStorage.getItem("token");
 
@@ -22,28 +23,53 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const updateScroll = () => {
+      handleScroll();
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress =
+        scrollableHeight > 0 ? (window.scrollY / scrollableHeight) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    };
+
+    updateScroll();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    window.addEventListener("resize", updateScroll);
+    return () => {
+      window.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateScroll);
+    };
   }, []);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-        scrolled
-          ? "py-4 bg-bg border-b border-border"
-          : "py-8 bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 sm:px-12">
-        <div className="flex justify-between items-center">
+    <>
+      <div
+        role="progressbar"
+        aria-label="Page scroll progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={Math.round(scrollProgress)}
+        className="fixed left-0 top-0 z-[60] h-0.5 bg-accent"
+        style={{ width: `${scrollProgress}%` }}
+      />
+      <nav
+        aria-label="Primary navigation"
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+          scrolled
+            ? "py-4 bg-bg border-b border-border"
+            : "py-8 bg-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-12">
+          <div className="flex justify-between items-center">
 
-          {/* Brand */}
-          <Link to="/" className="text-xl font-bold tracking-tighter text-text">
-            ADYA ARCHITA.
-          </Link>
+            {/* Brand */}
+            <Link to="/" className="text-xl font-bold tracking-tighter text-text">
+              ADYA ARCHITA.
+            </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex space-x-12 items-center">
+            {/* Desktop Links */}
+            <div className="hidden md:flex space-x-12 items-center">
             {navLinks.map((link) => (
               <NavLink
                 key={link.name}
@@ -76,7 +102,7 @@ export default function Navbar() {
               <button
                 onClick={toggleTheme}
                 aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                className="text-lg hover:scale-110 transition-transform"
+                className="text-lg hover:scale-110 transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 {darkMode ? "☀️" : "🌙"}
               </button>
@@ -109,7 +135,7 @@ export default function Navbar() {
             <button
               onClick={toggleTheme}
               aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-              className="text-lg"
+              className="text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
             >
               {darkMode ? "☀️" : "🌙"}
             </button>
@@ -118,18 +144,21 @@ export default function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isOpen}
-              className="text-text"
+              aria-controls="mobile-navigation"
+              className="text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Dropdown */}
-      <div
-        className={`md:hidden absolute top-full left-0 w-full bg-bg border-b border-border transition-all duration-500 overflow-hidden ${
-          isOpen ? "max-h-[400px] opacity-100 py-8" : "max-h-0 opacity-0 py-0"
+        {/* Mobile Dropdown */}
+        <div
+          id="mobile-navigation"
+          aria-hidden={!isOpen}
+          className={`md:hidden absolute top-full left-0 w-full bg-bg border-b border-border transition-all duration-500 overflow-hidden ${
+            isOpen ? "visible max-h-[400px] opacity-100 py-8" : "invisible max-h-0 opacity-0 py-0"
         }`}
       >
         <div className="flex flex-col items-center space-y-8">
@@ -182,7 +211,8 @@ export default function Navbar() {
             </NavLink>
           ))}
         </div>
-      </div>
-    </nav>
+        </div>
+      </nav>
+    </>
   );
 }

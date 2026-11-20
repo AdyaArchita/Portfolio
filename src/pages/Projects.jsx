@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flip } from "gsap/Flip";
 import { projects } from "../data/projects";
 import { ExternalLink, Github, Play } from "lucide-react";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger, Flip);
 
@@ -14,6 +15,7 @@ export default function Projects() {
   const containerRef = useRef(null);
   const previousLayout = useRef(null);
   const [activeCategory, setActiveCategory] = useState("All");
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const featuredProjects = projects.filter(
     (project) =>
@@ -24,22 +26,31 @@ export default function Projects() {
 
   const filterProjects = (category) => {
     if (category === activeCategory) return;
-    previousLayout.current = Flip.getState(".project-card");
+    if (!prefersReducedMotion) {
+      previousLayout.current = Flip.getState(".project-card");
+    }
     setActiveCategory(category);
   };
 
   useLayoutEffect(() => {
     if (!previousLayout.current) return;
-    Flip.from(previousLayout.current, {
+    if (prefersReducedMotion) {
+      previousLayout.current = null;
+      return;
+    }
+    const animation = Flip.from(previousLayout.current, {
       duration: 0.4,
       ease: "power2.out",
       absolute: true,
       prune: true,
     });
     previousLayout.current = null;
-  }, [activeCategory]);
+    return () => animation.kill();
+  }, [activeCategory, prefersReducedMotion]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const ctx = gsap.context(() => {
       // Header Animation
       gsap.from(".projects-header > *", {
@@ -76,7 +87,7 @@ export default function Projects() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <section ref={containerRef} className="bg-bg min-h-screen py-32 px-6 sm:px-12">

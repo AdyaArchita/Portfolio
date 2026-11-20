@@ -128,7 +128,9 @@
     fill: rgb(var(--color-accent));
   }
 
-  /* Respect prefers-reduced-motion across all GSAP animations */
+}
+
+@layer utilities {
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -141,9 +143,9 @@
 
     .hero-word,
     .role-word {
-      animation: none;
-      opacity: 1;
-      transform: none;
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
     }
   }
 }

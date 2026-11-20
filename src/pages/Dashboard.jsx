@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { api, setAuthToken } from "../services/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -7,11 +7,20 @@ export default function Dashboard() {
   const [posts, setPosts] = useState([]);
   const [form, setForm] = useState({ title: "", content: "", tags: "" });
   const [selected, setSelected] = useState(null);
+  const contentEditorRef = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setAuthToken(token);
     load();
+
+    const editor = contentEditorRef.current;
+    if (editor) {
+      editor.getEditor().root.setAttribute(
+        "aria-labelledby",
+        "dashboard-content-label"
+      );
+    }
   }, []);
 
   const load = async () => {
@@ -72,10 +81,14 @@ export default function Dashboard() {
           className="bg-surface border border-border rounded-3xl p-8 mb-24 space-y-6"
         >
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-muted px-1">
+            <label
+              htmlFor="dashboard-post-title"
+              className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+            >
               Post Title
             </label>
             <input
+              id="dashboard-post-title"
               type="text"
               placeholder="Enter title..."
               value={form.title}
@@ -86,14 +99,19 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-muted px-1">
+            <label
+              id="dashboard-content-label"
+              className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+            >
               Content
             </label>
             <div className="rounded-2xl overflow-hidden border border-border bg-surface">
               <ReactQuill
+                ref={contentEditorRef}
                 theme="snow"
                 value={form.content}
                 onChange={(val) => setForm({ ...form, content: val })}
+                aria-labelledby="dashboard-content-label"
                 className="text-text"
                 modules={{
                   toolbar: [
@@ -109,10 +127,14 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-muted px-1">
+            <label
+              htmlFor="dashboard-tags"
+              className="text-xs font-bold uppercase tracking-widest text-muted px-1"
+            >
               Tags
             </label>
             <input
+              id="dashboard-tags"
               type="text"
               placeholder="React, Design, GSAP..."
               value={form.tags}

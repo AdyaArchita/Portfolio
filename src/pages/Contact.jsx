@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import emailjs from "@emailjs/browser";
 import { socialLinks } from "../data/social";
 import { site } from "../data/site";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || "";
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "";
@@ -17,10 +18,13 @@ export default function Contact() {
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errors, setErrors] = useState({ name: "", email: "", message: "" });
   const [copyStatus, setCopyStatus] = useState("idle");
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => setCharsLeft(200 - form.message.length), [form.message]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const ctx = gsap.context(() => {
       gsap.from(".contact-header > *", {
         y: 40,
@@ -39,7 +43,7 @@ export default function Contact() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [prefersReducedMotion]);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -204,10 +208,12 @@ export default function Contact() {
                 placeholder="What's your name?"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all"
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={errors.name ? "contact-name-error" : undefined}
+                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 transition-all"
               />
               {errors.name && (
-                <p role="alert" className="text-accent text-xs mt-2">{errors.name}</p>
+                <p id="contact-name-error" role="alert" className="text-accent text-xs mt-2">{errors.name}</p>
               )}
             </div>
 
@@ -225,10 +231,12 @@ export default function Contact() {
                 placeholder="Where can I reach you?"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all"
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? "contact-email-error" : undefined}
+                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 transition-all"
               />
               {errors.email && (
-                <p role="alert" className="text-accent text-xs mt-2">{errors.email}</p>
+                <p id="contact-email-error" role="alert" className="text-accent text-xs mt-2">{errors.email}</p>
               )}
             </div>
 
@@ -246,14 +254,16 @@ export default function Contact() {
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 rows={4}
-                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all resize-none"
+                aria-invalid={Boolean(errors.message)}
+                aria-describedby={errors.message ? "contact-message-error" : undefined}
+                className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 transition-all resize-none"
               />
               <div className="flex justify-between mt-2">
                 <p className="text-xs text-muted uppercase tracking-widest">
                   {charsLeft} characters remaining
                 </p>
                 {errors.message && (
-                  <p role="alert" className="text-accent text-xs">{errors.message}</p>
+                  <p id="contact-message-error" role="alert" className="text-accent text-xs">{errors.message}</p>
                 )}
               </div>
             </div>

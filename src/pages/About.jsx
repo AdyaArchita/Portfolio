@@ -6,6 +6,7 @@ import { achievements } from "../data/achievements";
 import { projects } from "../data/projects";
 import GitHubStats from "../components/sections/GitHubStats";
 import GroupedSkills from "../components/sections/GroupedSkills";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,11 +37,14 @@ export default function About() {
   const containerRef = useRef(null);
   const [profileWebp, setProfileWebp] = useState(true);
   const [profileAvailable, setProfileAvailable] = useState(true);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const featuredProjects = projects
     .filter((project) => project.status === "featured")
     .slice(0, 3);
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const ctx = gsap.context(() => {
       gsap.from(".about-image", {
         opacity: 0,
@@ -68,7 +72,7 @@ export default function About() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <section

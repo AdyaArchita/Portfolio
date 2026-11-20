@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { gsap } from "gsap";
 import { projects } from "../data/projects";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const caseStudies = {
   nagarsaarthi: {
@@ -16,9 +17,10 @@ export default function ProjectDetail() {
   const { slug } = useParams();
   const project = projects.find((item) => item.slug === slug);
   const headerRef = useRef(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (!project) return undefined;
+    if (!project || prefersReducedMotion) return undefined;
 
     const ctx = gsap.context(() => {
       gsap.from(".hero-content > *", {
@@ -39,7 +41,7 @@ export default function ProjectDetail() {
     }, headerRef);
 
     return () => ctx.revert();
-  }, [project]);
+  }, [project, prefersReducedMotion]);
 
   if (!project) {
     return (
