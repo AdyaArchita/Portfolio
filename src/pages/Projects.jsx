@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "../data/projects";
@@ -73,7 +74,7 @@ export default function Projects() {
             >
               <div className="flex justify-between items-start mb-6">
                 <h2 className="text-3xl font-bold text-text tracking-tighter group-hover:text-accent transition-colors duration-300">
-                  {project.title}
+                  <Link to={`/projects/${project.slug}`}>{project.title}</Link>
                 </h2>
                 {project.category && (
                   <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-muted border border-border rounded-full">
@@ -83,7 +84,7 @@ export default function Projects() {
               </div>
 
               <p className="text-text/90 text-lg font-medium leading-relaxed tracking-tight mb-8 flex-grow">
-                {project.hook}
+                {project.shortDesc}
               </p>
 
               {(project.measured || project.safeguards) && (
@@ -108,7 +109,7 @@ export default function Projects() {
               )}
 
               <div className="flex flex-wrap gap-2 mb-8">
-                {project.stack.slice(0, 5).map((tag) => (
+                {project.tags.slice(0, 5).map((tag) => (
                   <span
                     key={tag}
                     className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest rounded-full bg-bg border border-border text-muted"
@@ -119,10 +120,10 @@ export default function Projects() {
               </div>
 
               <div className="flex flex-wrap items-center gap-6 mt-auto pt-6 border-t border-border">
-                {project.tryIt?.live && (
+                {project.links.live && (
                   <div className="flex items-center gap-2">
                     <a
-                      href={project.tryIt.live}
+                      href={project.links.live}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-accent hover:text-accent-hover transition-colors focus-visible"
@@ -137,9 +138,9 @@ export default function Projects() {
                     )}
                   </div>
                 )}
-                {project.tryIt?.repo && (
+                {project.links.repo && (
                   <a
-                    href={project.tryIt.repo}
+                    href={project.links.repo}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-text hover:text-accent transition-colors focus-visible"
@@ -148,9 +149,9 @@ export default function Projects() {
                     <Github size={14} /> Repo
                   </a>
                 )}
-                {project.tryIt?.demo && (
+                {project.links.demo && (
                   <a
-                    href={project.tryIt.demo}
+                    href={project.links.demo}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-text hover:text-accent transition-colors focus-visible"
@@ -178,10 +179,10 @@ export default function Projects() {
                 <div className="flex-1 space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                     <h4 className="text-xl font-bold text-text group-hover:text-accent transition-colors">
-                      {project.title}
+                      <Link to={`/projects/${project.slug}`}>{project.title}</Link>
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {project.stack.slice(0, 5).map((tag) => (
+                      {project.tags.slice(0, 5).map((tag) => (
                         <span
                           key={tag}
                           className="px-2 py-1 text-[10px] font-bold uppercase tracking-widest rounded-md bg-bg border border-border text-muted"
@@ -192,14 +193,14 @@ export default function Projects() {
                     </div>
                   </div>
                   <p className="text-sm font-medium text-muted tracking-tight">
-                    {project.hook}
+                    {project.shortDesc}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-6 md:pl-6 md:border-l border-border">
-                  {project.tryIt?.live && (
+                  {project.links.live && (
                     <a
-                      href={project.tryIt.live}
+                      href={project.links.live}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted hover:text-accent transition-colors focus-visible"
@@ -208,9 +209,9 @@ export default function Projects() {
                       <ExternalLink size={18} />
                     </a>
                   )}
-                  {project.tryIt?.repo && (
+                  {project.links.repo && (
                     <a
-                      href={project.tryIt.repo}
+                      href={project.links.repo}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted hover:text-text transition-colors focus-visible"
@@ -219,9 +220,9 @@ export default function Projects() {
                       <Github size={18} />
                     </a>
                   )}
-                  {project.tryIt?.demo && (
+                  {project.links.demo && (
                     <a
-                      href={project.tryIt.demo}
+                      href={project.links.demo}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted hover:text-text transition-colors focus-visible"

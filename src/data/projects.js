@@ -1,4 +1,4 @@
-export const projects = [
+const projectRecords = [
   // FEATURED PROJECTS
   {
     id: 1,
@@ -158,6 +158,8 @@ export const projects = [
     id: 10,
     title: "NagarSaarthi",
     hook: "Frontend prototype waste-reporting UI with chatbot and maps.",
+    content:
+      "Citizens can report waste issues with images, use the EcoSort chatbot, and view reports on interactive maps. Municipal dashboards support hotspot monitoring.",
     category: "Frontend",
     measured: null,
     safeguards: null,
@@ -171,3 +173,20 @@ export const projects = [
     slug: "nagarsaarthi",
   },
 ];
+
+export const projects = projectRecords.map((project) => {
+  const { hook, stack, tryIt, ...record } = project;
+
+  return {
+    ...record,
+    shortDesc: project.shortDesc || hook || project.title,
+    content: project.content || hook || project.shortDesc || project.title,
+    tags: Array.isArray(project.tags) ? project.tags : Array.isArray(stack) ? stack : [],
+    links: {
+      live: project.links?.live ?? tryIt?.live ?? null,
+      repo: project.links?.repo ?? tryIt?.repo ?? null,
+      demo: project.links?.demo ?? tryIt?.demo ?? null,
+    },
+    image: typeof project.image === "string" ? project.image : null,
+  };
+});
