@@ -95,7 +95,7 @@ export default function ProjectDetail() {
           >
             ← Case Studies
           </Link>
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.9] text-primary max-w-4xl">
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.9] text-text max-w-4xl">
             {project.title}
           </h1>
           <p className="text-2xl md:text-3xl font-medium tracking-tight text-muted max-w-3xl leading-tight">
@@ -120,7 +120,7 @@ export default function ProjectDetail() {
                 href={project.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center text-xs font-bold uppercase tracking-[0.2em] text-primary hover:text-accent transition-colors"
+                className="group inline-flex items-center text-xs font-bold uppercase tracking-[0.2em] text-text hover:text-accent transition-colors"
               >
                 Live Demo
                 <span className="ml-3 transform group-hover:translate-x-2 transition-transform duration-300">→</span>
@@ -137,7 +137,7 @@ export default function ProjectDetail() {
             width="1920"
             height="1080"
             className="w-full h-full object-cover"
-            onError={(e) => { e.target.src = "/images/placeholder.svg"; }}
+            onError={(e) => { e.target.src = "/placeholder.svg"; }}
           />
         </div>
       </section>
@@ -150,7 +150,7 @@ export default function ProjectDetail() {
           {/* Overview */}
           <div className="space-y-6">
             <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Overview</h2>
-            <p className="text-xl font-medium leading-relaxed tracking-tight text-primary/80">
+            <p className="text-xl font-medium leading-relaxed tracking-tight text-text/80">
               {project.content}
             </p>
           </div>
@@ -160,7 +160,7 @@ export default function ProjectDetail() {
               {/* Problem */}
               <div className="space-y-6 pt-12 border-t border-border">
                 <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Problem</h2>
-                <p className="text-xl font-medium leading-relaxed tracking-tight text-primary/80">
+                <p className="text-xl font-medium leading-relaxed tracking-tight text-text/80">
                   {cs.problem}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export default function ProjectDetail() {
               {/* Approach */}
               <div className="space-y-6 pt-12 border-t border-border">
                 <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Approach</h2>
-                <p className="text-xl font-medium leading-relaxed tracking-tight text-primary/80">
+                <p className="text-xl font-medium leading-relaxed tracking-tight text-text/80">
                   {cs.approach}
                 </p>
               </div>
@@ -176,7 +176,7 @@ export default function ProjectDetail() {
               {/* Challenges */}
               <div className="space-y-6 pt-12 border-t border-border">
                 <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Challenges</h2>
-                <p className="text-xl font-medium leading-relaxed tracking-tight text-primary/80">
+                <p className="text-xl font-medium leading-relaxed tracking-tight text-text/80">
                   {cs.challenges}
                 </p>
               </div>
@@ -184,7 +184,7 @@ export default function ProjectDetail() {
               {/* Outcome */}
               <div className="space-y-6 pt-12 border-t border-border">
                 <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">Outcome</h2>
-                <p className="text-xl font-medium leading-relaxed tracking-tight text-primary/80">
+                <p className="text-xl font-medium leading-relaxed tracking-tight text-text/80">
                   {cs.outcome}
                 </p>
               </div>
@@ -197,12 +197,12 @@ export default function ProjectDetail() {
           <div className="sticky top-32 space-y-10">
             <div className="space-y-4">
               <h4 className="text-xs font-bold text-muted uppercase tracking-[0.2em]">Role</h4>
-              <p className="text-xl font-bold tracking-tight text-primary">{project.role}</p>
+              <p className="text-xl font-bold tracking-tight text-text">{project.role}</p>
             </div>
 
             <div className="space-y-4">
               <h4 className="text-xs font-bold text-muted uppercase tracking-[0.2em]">Year</h4>
-              <p className="text-xl font-bold tracking-tight text-primary">{project.year}</p>
+              <p className="text-xl font-bold tracking-tight text-text">{project.year}</p>
             </div>
 
             <div className="space-y-4">
@@ -236,7 +236,7 @@ export default function ProjectDetail() {
                   href={project.demo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center text-xs font-bold uppercase tracking-[0.2em] text-primary hover:text-accent transition-colors"
+                  className="group flex items-center text-xs font-bold uppercase tracking-[0.2em] text-text hover:text-accent transition-colors"
                 >
                   Live Demo
                   <span className="ml-4 transform group-hover:translate-x-2 transition-transform duration-300">→</span>

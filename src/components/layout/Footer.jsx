@@ -13,7 +13,7 @@ export default function Footer() {
 
           {/* Brand + tagline */}
           <div className="space-y-4 max-w-xs">
-            <Link to="/" className="text-xl font-bold tracking-tighter text-primary">
+            <Link to="/" className="text-xl font-bold tracking-tighter text-text">
               {site.brandName}
             </Link>
             <p className="text-sm text-muted font-medium leading-relaxed">
@@ -64,7 +64,7 @@ export default function Footer() {
 
             <a
               href={site.resumePath}
-              download="Adya_Archita_Pattnaik_CV.pdf"
+              download="Adya-Archita-Pattnaik-Resume.pdf"
               className="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-accent hover:underline underline-offset-4"
             >
               Download CV →

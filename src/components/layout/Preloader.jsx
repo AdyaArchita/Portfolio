@@ -82,23 +82,13 @@ export default function Preloader() {
       ref={containerRef}
       className="preloader-container fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden pointer-events-none"
     >
-      {/* Shutter Panels — intentional inversion: dark overlay in light, white in dark */}
-      <div className="preloader-panel absolute top-0 left-0 w-full h-1/2 bg-slate-900 dark:bg-white z-20" />
-      <div className="preloader-panel absolute bottom-0 left-0 w-full h-1/2 bg-slate-900 dark:bg-white z-20" />
-
-      {/* Accent Layers */}
-      <div
-        className="preloader-panel absolute top-0 left-0 w-full h-1/2 bg-accent z-10"
-        style={{ transform: "translateY(-2px)" }}
-      />
-      <div
-        className="preloader-panel absolute bottom-0 left-0 w-full h-1/2 bg-accent z-10"
-        style={{ transform: "translateY(2px)" }}
-      />
+      {/* Shutter Panels */}
+      <div className="preloader-panel absolute top-0 left-0 w-full h-1/2 bg-bg z-20" />
+      <div className="preloader-panel absolute bottom-0 left-0 w-full h-1/2 bg-bg z-20" />
 
       <div className="relative z-30 flex flex-col items-center px-6">
         <div className="mb-2">
-          <h2 className="progress-number text-white dark:text-slate-900 text-7xl sm:text-8xl md:text-9xl font-bold tracking-tighter tabular-nums">
+          <h2 className="progress-number text-text text-7xl sm:text-8xl md:text-9xl font-bold tracking-tighter tabular-nums">
             {progress}
           </h2>
         </div>
@@ -106,14 +96,14 @@ export default function Preloader() {
         <div className="flex flex-col items-center gap-4">
           <div className="flex items-center gap-3">
             <span className="w-8 h-[1px] bg-accent" />
-            <p className="status-text text-white/40 dark:text-slate-500 text-xs uppercase tracking-[0.5em] font-bold min-w-[200px] text-center">
+            <p className="status-text text-muted text-xs uppercase tracking-[0.5em] font-bold min-w-[200px] text-center">
               {statuses[statusIndex]}
             </p>
             <span className="w-8 h-[1px] bg-accent" />
           </div>
 
           {/* Progress Bar */}
-          <div className="w-48 h-[1px] bg-white/10 dark:bg-black/10 relative overflow-hidden">
+          <div className="w-48 h-[1px] bg-border relative overflow-hidden">
             <div
               className="absolute inset-y-0 left-0 bg-accent transition-all duration-300"
               style={{ width: `${progress}%` }}

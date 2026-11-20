@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects as allProjects } from "../data/projects";
 import { skillCategories } from "../data/skills";
+import { site } from "../data/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,6 +12,7 @@ export default function Home() {
   const heroRef = useRef(null);
   const bentoRef = useRef(null);
   const magneticRefs = useRef([]);
+  const [profileAvailable, setProfileAvailable] = useState(true);
 
   // Show first 3 project titles in the bento
   const featuredTitles = allProjects.slice(0, 3).map((p) => p.title);
@@ -48,17 +50,7 @@ export default function Home() {
         btn.addEventListener("mouseleave", resetBtn);
       });
 
-      // 3. Parallax Profile
-      const handleParallax = (e) => {
-        const { clientX, clientY } = e;
-        const xPos = (clientX / window.innerWidth - 0.5) * 40;
-        const yPos = (clientY / window.innerHeight - 0.5) * 40;
-        gsap.to(".parallax-bg", { x: xPos * 0.5, y: yPos * 0.5, duration: 0.6 });
-        gsap.to(".parallax-img", { x: -xPos * 0.3, y: -yPos * 0.3, duration: 0.6 });
-      };
-      window.addEventListener("mousemove", handleParallax);
-
-      // 4. Dynamic Counter
+      // 3. Dynamic Counter
       const counters = gsap.utils.toArray(".count-up");
       counters.forEach((counter) => {
         const target = parseInt(counter.getAttribute("data-target"));
@@ -70,7 +62,7 @@ export default function Home() {
         });
       });
 
-      // 5. Bento Entrance
+      // 4. Bento Entrance
       gsap.fromTo(
         ".bento-item",
         { y: 60, opacity: 0 },
@@ -88,7 +80,7 @@ export default function Home() {
         }
       );
 
-      // 6. Refresh ScrollTrigger after preloader exit
+      // 5. Refresh ScrollTrigger after preloader exit
       setTimeout(() => ScrollTrigger.refresh(), 1000);
     }, heroRef);
 
@@ -104,15 +96,15 @@ export default function Home() {
   return (
     <section
       ref={heroRef}
-      className="min-h-screen bg-bg text-primary pt-32 pb-32 px-6 sm:px-12 flex flex-col items-center selection:bg-accent selection:text-bg"
+      className="min-h-screen bg-bg text-text pt-32 pb-32 px-6 sm:px-12 flex flex-col items-center selection:bg-accent selection:text-on-accent"
     >
       <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row justify-between items-center gap-16 lg:gap-24">
 
         {/* Left: Content */}
-        <div className="flex flex-col gap-10 w-full lg:w-3/5 items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
+        <div className="flex flex-col gap-10 w-full lg:w-3/5 items-center lg:items-start text-center lg:text-left order-1 lg:order-1">
           <div className="space-y-6">
             <div className="overflow-hidden">
-              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.8] text-primary split-line">
+              <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.8] text-text split-line">
                 Designing Digital <br />
                 <span className="text-accent italic">Experiences.</span>
               </h1>
@@ -126,20 +118,19 @@ export default function Home() {
           </div>
 
           <div className="hero-btns flex flex-col sm:flex-row gap-8 items-center">
-            {/* Intentional inversion CTA: dark in light mode, white in dark mode */}
             <Link
               ref={addToMagnetic}
               to="/contact"
-              className="group relative px-12 py-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-transform duration-500 hover:scale-105"
+              className="group relative px-12 py-6 bg-accent text-on-accent rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-all duration-500 hover:scale-105 hover:bg-accent-hover"
             >
               Start a Project
             </Link>
 
             <a
               ref={addToMagnetic}
-              href="/resume.pdf"
-              download="Adya_Archita_Pattnaik_CV.pdf"
-              className="px-12 py-6 rounded-full border border-border font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-2 hover:bg-surface transition-transform duration-500"
+              href={site.resumePath}
+              download="Adya-Archita-Pattnaik-Resume.pdf"
+              className="px-12 py-6 rounded-full border border-border text-text font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-2 bg-transparent hover:bg-surface hover:border-accent transition-all duration-500"
             >
               Resume 2025
             </a>
@@ -167,23 +158,25 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right: Parallax Visual */}
-        <div className="w-full lg:w-2/5 order-1 lg:order-2">
-          <div className="relative aspect-[4/5] max-w-sm mx-auto">
-            <div className="parallax-bg absolute inset-0 bg-surface rounded-[3.5rem] rotate-6 border border-border" />
-            <div className="parallax-img relative h-full w-full bg-surface rounded-[3.5rem] overflow-hidden border border-border shadow-2xl">
+        {/* Right: Profile Image */}
+        {profileAvailable && (
+          <div className="w-full lg:w-2/5 order-2 lg:order-2">
+            <div className="relative aspect-[4/5] w-full max-w-[320px] lg:max-w-sm mx-auto rounded-3xl overflow-hidden border border-border bg-surface">
               <img
-                src="/images/profile.webp"
-                alt="Adya Archita"
-                loading="lazy"
-                width="800"
-                height="1000"
-                className="w-full h-full object-cover transition-all duration-1000"
-                onError={(e) => { e.target.src = "/images/placeholder.svg"; }}
+                src="/profile.png"
+                alt="Adya Archita Pattnaik"
+                loading="eager"
+                width="480"
+                height="600"
+                className="w-full h-full object-cover"
+                onError={() => {
+                  console.warn("Unable to load hero profile image: /profile.png");
+                  setProfileAvailable(false);
+                }}
               />
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Bento Grid */}
@@ -192,7 +185,7 @@ export default function Home() {
         className="max-w-7xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-12 gap-8 w-full"
       >
         {/* Selected Works */}
-        <div className="bento-item md:col-span-5 p-12 rounded-[3rem] bg-surface/20 backdrop-blur-2xl border border-border/50 flex flex-col justify-between group hover:border-accent/40 transition-all duration-500 shadow-xl">
+        <div className="bento-item md:col-span-5 p-12 rounded-[3rem] bg-surface border border-border flex flex-col justify-between group hover:border-accent/40 transition-all duration-500 shadow-xl">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-muted mb-12">
               Selected Works
@@ -201,7 +194,7 @@ export default function Home() {
               {featuredTitles.map((title, i) => (
                 <div key={i} className="flex items-center gap-6 group/item cursor-pointer">
                   <div className="w-3 h-3 rounded-full border border-border group-hover/item:bg-accent group-hover/item:border-accent transition-all duration-300" />
-                  <p className="text-xl font-medium tracking-tight text-muted group-hover/item:text-primary transition-colors">
+                  <p className="text-xl font-medium tracking-tight text-muted group-hover/item:text-text transition-colors">
                     {title}
                   </p>
                 </div>
@@ -221,9 +214,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Expertise — intentional inversion card */}
-        <div className="bento-item md:col-span-7 p-12 rounded-[3rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex flex-col shadow-2xl relative overflow-hidden">
-          <h3 className="text-xs font-bold uppercase tracking-[0.5em] opacity-40 mb-14">
+        {/* Expertise */}
+        <div className="bento-item md:col-span-7 p-12 rounded-[3rem] bg-surface text-text flex flex-col border border-border relative overflow-hidden">
+          <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-muted mb-14">
             Core Expertise
           </h3>
 
@@ -237,7 +230,7 @@ export default function Home() {
                   {cat.skills.map((skill, si) => (
                     <li
                       key={si}
-                      className="text-lg font-bold tracking-tighter opacity-80 hover:opacity-100 hover:translate-x-1 transition-all cursor-default"
+                      className="text-lg font-bold tracking-tighter hover:translate-x-1 transition-all cursor-default"
                     >
                       {skill}
                     </li>
@@ -247,10 +240,10 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-20 pt-16 border-t border-white/10 dark:border-black/5">
+          <div className="mt-20 pt-16 border-t border-border">
             <p className="text-4xl md:text-5xl font-bold tracking-tighter leading-[0.9] max-w-xl">
               Engineering{" "}
-              <span className="opacity-40 italic">Future-Ready</span> <br />
+              <span className="text-muted italic">Future-Ready</span> <br />
               Digital Ecosystems.
             </p>
           </div>

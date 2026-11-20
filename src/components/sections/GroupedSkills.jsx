@@ -20,7 +20,7 @@ export default function GroupedSkills() {
               {category.skills.map((skill) => (
                 <li
                   key={skill}
-                  className="group flex items-center gap-3 text-sm font-medium text-muted hover:text-primary transition-colors cursor-default"
+                  className="group flex items-center gap-3 text-sm font-medium text-muted hover:text-text transition-colors cursor-default"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-border group-hover:bg-accent transition-colors flex-shrink-0" />
                   {skill}

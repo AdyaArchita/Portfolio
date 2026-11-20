@@ -29,37 +29,47 @@ export default function AdminLogin() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <h1 className="text-2xl font-bold tracking-tighter text-primary mb-6 text-center">
+        <h1 className="text-2xl font-bold tracking-tighter text-text mb-6 text-center">
           Admin Login
         </h1>
 
         <form className="flex flex-col gap-4" onSubmit={submit}>
+          <label htmlFor="admin-email" className="text-xs font-bold uppercase tracking-widest text-muted">
+            Email
+          </label>
           <input
+            id="admin-email"
+            name="email"
             type="email"
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
-            className="px-4 py-3 rounded-xl border border-border bg-bg text-primary focus:border-accent focus:outline-none transition-all"
+            className="px-4 py-3 rounded-xl border border-border bg-surface text-text focus:border-accent focus:outline-none transition-all"
           />
+          <label htmlFor="admin-password" className="text-xs font-bold uppercase tracking-widest text-muted">
+            Password
+          </label>
           <input
+            id="admin-password"
+            name="password"
             type="password"
             placeholder="Password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
-            className="px-4 py-3 rounded-xl border border-border bg-bg text-primary focus:border-accent focus:outline-none transition-all"
+            className="px-4 py-3 rounded-xl border border-border bg-surface text-text focus:border-accent focus:outline-none transition-all"
           />
 
           <button
             type="submit"
-            className="mt-2 px-4 py-3 bg-slate-900 dark:bg-white hover:opacity-90 text-white dark:text-slate-900 font-bold rounded-full uppercase tracking-[0.2em] text-xs transition-all"
+            className="mt-2 px-4 py-3 bg-accent text-on-accent hover:bg-accent-hover font-bold rounded-full uppercase tracking-[0.2em] text-xs transition-colors"
           >
             Login
           </button>
 
           {err && (
-            <p className="text-red-500 text-sm mt-2 text-center font-medium">{err}</p>
+            <p className="text-accent text-sm mt-2 text-center font-medium">{err}</p>
           )}
         </form>
       </motion.div>

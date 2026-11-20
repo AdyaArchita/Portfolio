@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import emailjs from "@emailjs/browser";
 import { socialLinks } from "../data/social";
+import { site } from "../data/site";
 
 const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || "";
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "";
@@ -15,6 +16,7 @@ export default function Contact() {
   const [charsLeft, setCharsLeft] = useState(200);
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errors, setErrors] = useState({ name: "", email: "", message: "" });
+  const [copyStatus, setCopyStatus] = useState("idle");
 
   useEffect(() => setCharsLeft(200 - form.message.length), [form.message]);
 
@@ -40,6 +42,16 @@ export default function Contact() {
   }, []);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(site.email);
+      setCopyStatus("copied");
+    } catch (error) {
+      console.error("Could not copy contact email.", error);
+      setCopyStatus("error");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,7 +96,7 @@ export default function Contact() {
         );
       } else {
         // Graceful degradation: open mailto link so the message is never lost
-        const mailtoLink = `mailto:adyaarchita@example.com?subject=Portfolio%20Contact%20from%20${encodeURIComponent(
+        const mailtoLink = `mailto:${site.email}?subject=Portfolio%20Contact%20from%20${encodeURIComponent(
           form.name
         )}&body=${encodeURIComponent(form.message)}%0A%0AFrom%3A%20${encodeURIComponent(form.email)}`;
         window.open(mailtoLink, "_blank");
@@ -101,7 +113,7 @@ export default function Contact() {
   return (
     <section
       ref={containerRef}
-      className="min-h-screen bg-bg text-primary pt-32 pb-32 px-6 sm:px-12"
+      className="min-h-screen bg-bg text-text pt-32 pb-32 px-6 sm:px-12"
     >
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-24">
 
@@ -119,6 +131,35 @@ export default function Contact() {
 
           <div className="space-y-4 pt-12 border-t border-border">
             <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
+              Email
+            </h3>
+            <div className="flex flex-wrap items-center gap-4">
+              <a
+                href={`mailto:${site.email}`}
+                className="text-lg font-semibold text-text hover:text-accent transition-colors"
+              >
+                {site.email}
+              </a>
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="rounded-full border border-border px-4 py-2 text-xs font-bold uppercase tracking-widest text-text hover:border-accent transition-colors"
+              >
+                Copy email
+              </button>
+              {copyStatus === "copied" && (
+                <span role="status" className="text-xs text-muted">Email copied.</span>
+              )}
+              {copyStatus === "error" && (
+                <span role="alert" className="text-xs text-muted">
+                  Could not copy. Select the email address to copy it.
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-12 border-t border-border">
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted">
               Connect
             </h3>
             <div className="flex flex-wrap gap-4">
@@ -131,7 +172,7 @@ export default function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
-                    className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-lg hover:bg-primary hover:text-bg hover:border-primary transition-all duration-300"
+                    className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-lg hover:bg-accent hover:text-on-accent hover:border-accent transition-all duration-300"
                   >
                     <Icon />
                   </a>
@@ -146,7 +187,7 @@ export default function Contact() {
           <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="space-y-8 bg-surface/80 p-12 rounded-[2.5rem] border border-border"
+            className="space-y-8 bg-surface p-12 rounded-[2.5rem] border border-border"
           >
             {/* EmailJS expects input names to match template variables */}
             <div className="space-y-2">
@@ -166,7 +207,7 @@ export default function Contact() {
                 className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all"
               />
               {errors.name && (
-                <p role="alert" className="text-red-500 text-xs mt-2">{errors.name}</p>
+                <p role="alert" className="text-accent text-xs mt-2">{errors.name}</p>
               )}
             </div>
 
@@ -187,7 +228,7 @@ export default function Contact() {
                 className="w-full bg-transparent border-b border-border py-4 px-1 focus:border-accent focus:outline-none transition-all"
               />
               {errors.email && (
-                <p role="alert" className="text-red-500 text-xs mt-2">{errors.email}</p>
+                <p role="alert" className="text-accent text-xs mt-2">{errors.email}</p>
               )}
             </div>
 
@@ -212,16 +253,15 @@ export default function Contact() {
                   {charsLeft} characters remaining
                 </p>
                 {errors.message && (
-                  <p role="alert" className="text-red-500 text-xs">{errors.message}</p>
+                  <p role="alert" className="text-accent text-xs">{errors.message}</p>
                 )}
               </div>
             </div>
 
-            {/* Intentional inversion button */}
             <button
               type="submit"
               disabled={status === "sending"}
-              className="group relative w-full py-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-all hover:pr-12 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
+              className="group relative w-full py-6 bg-accent text-on-accent rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-all hover:bg-accent-hover hover:pr-12 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <span>
                 {status === "sending" ? "Sending…" : "Send Message"}
@@ -240,12 +280,12 @@ export default function Contact() {
               </p>
             )}
             {status === "error" && (
-              <p role="alert" className="text-red-500 text-center font-bold text-sm tracking-widest uppercase">
+              <p role="alert" className="text-accent text-center font-bold text-sm tracking-widest uppercase">
                 Something went wrong. Please try again.
               </p>
             )}
             {!USE_EMAILJS && status === "idle" && (
-              <p className="text-muted/60 text-center text-xs tracking-widest">
+              <p className="text-muted text-center text-xs tracking-widest">
                 Email service not configured — form will open your mail app.
               </p>
             )}

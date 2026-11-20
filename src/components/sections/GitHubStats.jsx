@@ -97,7 +97,7 @@ export default function GitHubStats() {
               key={item.label}
               className="p-6 rounded-2xl bg-surface border border-border hover:border-accent/40 transition-all duration-300 group"
             >
-              <p className="text-3xl font-bold tracking-tighter text-primary group-hover:text-accent transition-colors">
+              <p className="text-3xl font-bold tracking-tighter text-text group-hover:text-accent transition-colors">
                 {item.value}
               </p>
               <p className="text-xs font-bold uppercase tracking-widest text-muted mt-2">

@@ -38,7 +38,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center">
 
           {/* Brand */}
-          <Link to="/" className="text-xl font-bold tracking-tighter text-primary">
+          <Link to="/" className="text-xl font-bold tracking-tighter text-text">
             ADYA ARCHITA.
           </Link>
 
@@ -88,14 +88,14 @@ export default function Navbar() {
                       localStorage.removeItem("token");
                       window.location.href = "/";
                     }}
-                    className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-bg transition-all"
+                    className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-surface text-accent border border-border hover:bg-accent hover:text-on-accent hover:border-accent transition-all"
                   >
                     Logout
                   </button>
                 ) : (
                   <NavLink
                     to="/admin"
-                    className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-80 transition-all"
+                    className="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-surface text-text border border-border hover:border-accent transition-all"
                   >
                     Admin
                   </NavLink>
@@ -118,7 +118,7 @@ export default function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isOpen}
-              className="text-primary"
+              className="text-text"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -149,7 +149,7 @@ export default function Navbar() {
             </NavLink>
           ))}
 
-          {isAuthenticated ? (
+          {ADMIN_ENABLED && (isAuthenticated ? (
             <>
               <NavLink
                 to="/dashboard"
@@ -167,7 +167,7 @@ export default function Navbar() {
                   localStorage.removeItem("token");
                   window.location.href = "/";
                 }}
-                className="text-xs font-bold uppercase tracking-[0.2em] text-red-500"
+                className="text-xs font-bold uppercase tracking-[0.2em] text-accent"
               >
                 Logout
               </button>
@@ -176,11 +176,11 @@ export default function Navbar() {
             <NavLink
               to="/admin"
               onClick={() => setIsOpen(false)}
-              className="text-xs font-bold uppercase tracking-[0.2em] text-primary"
+              className="text-xs font-bold uppercase tracking-[0.2em] text-text"
             >
               Admin
             </NavLink>
-          )}
+          ))}
         </div>
       </div>
     </nav>

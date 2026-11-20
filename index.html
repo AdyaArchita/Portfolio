@@ -5,27 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta -->
-    <title>Adya Archita Pattnaik — Full-Stack Engineer & UI Designer</title>
-    <meta name="description" content="Portfolio of Adya Archita Pattnaik — Full-Stack Engineer specializing in high-performance React applications, AI-driven systems, and premium UI engineering." />
+    <title>Adya Archita Pattnaik — Computer Science Student</title>
+    <meta name="description" content="Adya Archita Pattnaik is a B.Tech Computer Science student at OUTR building full-stack and AI-driven web applications." />
     <meta name="author" content="Adya Archita Pattnaik" />
     <meta name="robots" content="index, follow" />
 
-    <!-- Theme Color (terracotta accent) -->
-    <meta name="theme-color" content="#E2725B" />
+    <meta name="theme-color" content="#141211" />
+
+    <script>
+      const themePreference = localStorage.getItem("theme-preference");
+      if (themePreference === "dark" || (themePreference === null && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
 
     <!-- Open Graph -->
     <meta property="og:type"        content="website" />
     <meta property="og:url"         content="https://adyaarchita.dev/" />
-    <meta property="og:title"       content="Adya Archita Pattnaik — Full-Stack Engineer" />
-    <meta property="og:description" content="High-performance React · AI-driven systems · Premium UI engineering" />
-    <meta property="og:image"       content="/images/profile.png" />
+    <meta property="og:title"       content="Adya Archita Pattnaik — Computer Science Student" />
+    <meta property="og:description" content="B.Tech Computer Science student at OUTR building full-stack and AI-driven web applications." />
+    <meta property="og:image"       content="/profile.png" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card"        content="summary_large_image" />
     <meta name="twitter:url"         content="https://adyaarchita.dev/" />
-    <meta name="twitter:title"       content="Adya Archita Pattnaik — Full-Stack Engineer" />
-    <meta name="twitter:description" content="High-performance React · AI-driven systems · Premium UI engineering" />
-    <meta name="twitter:image"       content="/images/profile.png" />
+    <meta name="twitter:title"       content="Adya Archita Pattnaik — Computer Science Student" />
+    <meta name="twitter:description" content="B.Tech Computer Science student at OUTR building full-stack and AI-driven web applications." />
+    <meta name="twitter:image"      content="/profile.png" />
 
     <!-- SVG Favicon — terracotta "A" monogram -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -42,7 +48,7 @@
     <!-- Skip to content — keyboard / screen reader shortcut -->
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-6 focus:py-3 focus:bg-accent focus:text-bg focus:font-bold focus:text-xs focus:uppercase focus:tracking-widest focus:rounded-full"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-6 focus:py-3 focus:bg-accent focus:text-on-accent focus:font-bold focus:text-xs focus:uppercase focus:tracking-widest focus:rounded-full"
     >
       Skip to content
     </a>

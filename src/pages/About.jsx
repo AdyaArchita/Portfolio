@@ -80,7 +80,7 @@ export default function About() {
   return (
     <section
       ref={containerRef}
-      className="min-h-screen bg-bg text-primary pt-32 pb-0 px-6 sm:px-12 overflow-hidden"
+      className="min-h-screen bg-bg text-text pt-32 pb-0 px-6 sm:px-12 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
 
@@ -90,15 +90,15 @@ export default function About() {
           <div className="about-image w-full lg:w-1/3 sticky top-32">
             <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-surface border border-border">
               <img
-                src="/images/profile.webp"
+                src="/profile.png"
                 alt="Adya Archita Pattnaik"
                 loading="lazy"
                 width="800"
                 height="1000"
                 className="w-full h-full object-cover"
-                onError={(e) => { e.target.src = "/images/placeholder.svg"; }}
+                onError={(e) => { e.target.src = "/placeholder.svg"; }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-bg/40 to-transparent" />
             </div>
           </div>
 
@@ -108,7 +108,7 @@ export default function About() {
               <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-8">
                 The Journey.
               </h1>
-              <p className="text-2xl font-medium tracking-tight leading-relaxed text-primary/90">
+              <p className="text-2xl font-medium tracking-tight leading-relaxed text-text/90">
                 A software engineer sculpting intangible structures that shape our
                 technological world.
               </p>
@@ -136,7 +136,7 @@ export default function About() {
                 {allSkills.map((skill) => (
                   <span
                     key={skill}
-                    className="skill-tag px-6 py-3 rounded-full border border-border text-sm font-bold tracking-tight hover:bg-accent hover:text-bg hover:border-accent transition-all duration-300"
+                    className="skill-tag px-6 py-3 rounded-full border border-border text-sm font-bold tracking-tight hover:bg-accent hover:text-on-accent hover:border-accent-hover transition-all duration-300"
                   >
                     {skill}
                   </span>
@@ -173,7 +173,7 @@ export default function About() {
 
                 <div className="space-y-3">
                   <div className="flex flex-wrap items-center gap-4">
-                    <h3 className="text-xl font-bold tracking-tighter text-primary">
+                    <h3 className="text-xl font-bold tracking-tighter text-text">
                       {item.role}
                     </h3>
                     <span className="text-xs font-bold text-muted uppercase tracking-widest">
