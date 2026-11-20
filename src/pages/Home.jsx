@@ -99,10 +99,10 @@ export default function Home() {
           <div className="hero-btns flex flex-col sm:flex-row gap-8 items-center">
             <Link
               ref={addToMagnetic}
-              to="/contact"
+              to="/projects"
               className="group relative px-10 py-5 bg-accent text-on-accent rounded-full font-bold uppercase tracking-[0.2em] text-xs transition-colors hover:bg-accent-hover"
             >
-              Start a Project
+              View Projects
             </Link>
 
             <a
@@ -111,7 +111,7 @@ export default function Home() {
               download="Adya-Archita-Pattnaik-Resume.pdf"
               className="px-10 py-5 rounded-full border border-border text-text font-bold uppercase tracking-[0.2em] text-xs flex items-center gap-2 bg-transparent hover:border-accent transition-colors"
             >
-              Resume 2025
+              Resume
             </a>
           </div>
 

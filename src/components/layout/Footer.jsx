@@ -27,7 +27,7 @@ export default function Footer() {
               {[
                 { label: "Home",     path: "/" },
                 { label: "About",    path: "/about" },
-                { label: "Projects", path: "/projects" },
+                { label: "View Projects", path: "/projects" },
                 { label: "Contact",  path: "/contact" },
               ].map((l) => (
                 <li key={l.label}>
@@ -67,7 +67,7 @@ export default function Footer() {
               download="Adya-Archita-Pattnaik-Resume.pdf"
               className="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-accent hover:underline underline-offset-4"
             >
-              Download CV →
+              Resume
             </a>
           </div>
         </div>
